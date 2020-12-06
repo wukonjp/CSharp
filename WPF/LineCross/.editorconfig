@@ -1,0 +1,16 @@
+﻿[*.{cs,vb}]
+
+# IDE0074: 複合代入を使用
+dotnet_style_prefer_compound_assignment = true:none
+
+# CA1305: IFormatProvider を指定します
+dotnet_diagnostic.CA1305.severity = none
+
+# CA1824: アセンブリに NeutralResourcesLanguageAttribute を設定します
+dotnet_diagnostic.CA1824.severity = none
+
+# CA1822: メンバー Main はインスタンス データにアクセスしないため、static (Visual Basic では Shared) に設定できます
+dotnet_diagnostic.CA1822.severity = none
+
+# CA1303: ローカライズされるパラメーターとしてリテラルを渡さない
+dotnet_diagnostic.CA1303.severity = none

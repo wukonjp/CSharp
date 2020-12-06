@@ -1,0 +1,142 @@
+﻿<Window x:Class="LineCross.View.MainWindow"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+		xmlns:i="http://schemas.microsoft.com/expression/2010/interactivity" 
+		xmlns:ei="http://schemas.microsoft.com/expression/2010/interactions" 
+		xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+        xmlns:ignore="http://www.galasoft.ch/ignore"
+		xmlns:v="clr-namespace:LineCross.View"
+		xmlns:vm="clr-namespace:LineCross.ViewModel"
+		xmlns:sys="clr-namespace:System;assembly=mscorlib"
+		mc:Ignorable="d ignore"
+        Height="500"
+        Width="500"
+        Title="直線同士の交点を視覚化"
+        DataContext="{Binding Main, Source={StaticResource Locator}}"
+		WindowStartupLocation="CenterScreen">
+
+	<Window.Resources>
+		<ResourceDictionary>
+			<ResourceDictionary.MergedDictionaries>
+				<ResourceDictionary Source="../Skins/MainSkin.xaml" />
+			</ResourceDictionary.MergedDictionaries>
+
+			<sys:Double x:Key="PointSize">16.0</sys:Double>
+			<v:LeftTopOffsetConverter x:Key="LeftTopOffsetConverter"/>
+		</ResourceDictionary>
+	</Window.Resources>
+
+	<i:Interaction.Triggers>
+		<i:EventTrigger EventName="Loaded">
+			<i:InvokeCommandAction Command="{Binding WindowLoadedCommand}" />
+		</i:EventTrigger>
+
+		<i:EventTrigger EventName="Closed">
+			<i:InvokeCommandAction Command="{Binding WindowClosedCommand}" />
+		</i:EventTrigger>
+	</i:Interaction.Triggers>
+
+	<Grid x:Name="LayoutRoot">
+		<Grid.RowDefinitions>
+			<RowDefinition Height="400*"/>
+			<RowDefinition Height="40"/>
+		</Grid.RowDefinitions>
+
+		<Canvas Grid.Row="0">
+
+			<Line
+				X1="{Binding Line1StartX}"
+				Y1="{Binding Line1StartY}"
+				X2="{Binding Line1EndX}"
+				Y2="{Binding Line1EndY}"
+				StrokeThickness="2"
+				Stroke="Black"/>
+
+			<Line
+				X1="{Binding Line2StartX}"
+				Y1="{Binding Line2StartY}"
+				X2="{Binding Line2EndX}"
+				Y2="{Binding Line2EndY}"
+				StrokeThickness="2"
+				Stroke="Blue"/>
+
+			<Thumb
+				Canvas.Left="{Binding Line1StartX, Converter={StaticResource LeftTopOffsetConverter}, ConverterParameter={StaticResource PointSize}}"
+				Canvas.Top="{Binding Line1StartY, Converter={StaticResource LeftTopOffsetConverter}, ConverterParameter={StaticResource PointSize}}">
+
+				<i:Interaction.Behaviors>
+					<v:PointDragDropBehavior Command="{Binding ChangePointCommand}" CommandParameter="0" />
+				</i:Interaction.Behaviors>
+
+				<Thumb.Template>
+					<ControlTemplate>
+						<Ellipse Width="{StaticResource PointSize}" Height="{StaticResource PointSize}" Fill="Green" />
+					</ControlTemplate>
+				</Thumb.Template>
+			</Thumb>
+
+			<Thumb
+				Canvas.Left="{Binding Line1EndX, Converter={StaticResource LeftTopOffsetConverter}, ConverterParameter={StaticResource PointSize}}"
+				Canvas.Top="{Binding Line1EndY, Converter={StaticResource LeftTopOffsetConverter}, ConverterParameter={StaticResource PointSize}}">
+
+				<i:Interaction.Behaviors>
+					<v:PointDragDropBehavior Command="{Binding ChangePointCommand}" CommandParameter="1" />
+				</i:Interaction.Behaviors>
+
+				<Thumb.Template>
+					<ControlTemplate>
+						<Ellipse Width="{StaticResource PointSize}" Height="{StaticResource PointSize}" Fill="Chocolate" />
+					</ControlTemplate>
+				</Thumb.Template>
+			</Thumb>
+
+			<Thumb
+				Canvas.Left="{Binding Line2StartX, Converter={StaticResource LeftTopOffsetConverter}, ConverterParameter={StaticResource PointSize}}"
+				Canvas.Top="{Binding Line2StartY, Converter={StaticResource LeftTopOffsetConverter}, ConverterParameter={StaticResource PointSize}}">
+
+				<i:Interaction.Behaviors>
+					<v:PointDragDropBehavior Command="{Binding ChangePointCommand}" CommandParameter="2" />
+				</i:Interaction.Behaviors>
+
+				<Thumb.Template>
+					<ControlTemplate>
+						<Ellipse Width="{StaticResource PointSize}" Height="{StaticResource PointSize}" Fill="Magenta" />
+					</ControlTemplate>
+				</Thumb.Template>
+			</Thumb>
+
+			<Thumb
+				Canvas.Left="{Binding Line2EndX, Converter={StaticResource LeftTopOffsetConverter}, ConverterParameter={StaticResource PointSize}}"
+				Canvas.Top="{Binding Line2EndY, Converter={StaticResource LeftTopOffsetConverter}, ConverterParameter={StaticResource PointSize}}">
+
+				<i:Interaction.Behaviors>
+					<v:PointDragDropBehavior Command="{Binding ChangePointCommand}" CommandParameter="3" />
+				</i:Interaction.Behaviors>
+
+				<Thumb.Template>
+					<ControlTemplate>
+						<Ellipse Width="{StaticResource PointSize}" Height="{StaticResource PointSize}" Fill="Red" />
+					</ControlTemplate>
+				</Thumb.Template>
+			</Thumb>
+
+			<Ellipse
+				Canvas.Left="{Binding CrossPointX, Converter={StaticResource LeftTopOffsetConverter}, ConverterParameter={StaticResource PointSize}}"
+				Canvas.Top="{Binding CrossPointY, Converter={StaticResource LeftTopOffsetConverter}, ConverterParameter={StaticResource PointSize}}"
+				Width="{StaticResource PointSize}" Height="{StaticResource PointSize}" Fill="Purple" Visibility="{Binding CrossPointVisibility}" />
+
+		</Canvas>
+
+		<StackPanel Grid.Row="1" HorizontalAlignment="Right" VerticalAlignment="Center">
+			<Button Content="情報" Height="24" Width="50" HorizontalAlignment="Right" VerticalAlignment="Bottom" VerticalContentAlignment="Center">
+				<i:Interaction.Triggers>
+					<i:EventTrigger EventName="Click">
+						<v:ShowWindowAction WindowType="{x:Type v:InfoWindow}" IsModal="True" />
+					</i:EventTrigger>
+				</i:Interaction.Triggers>
+			</Button>
+		</StackPanel>
+
+	</Grid>
+</Window>
