@@ -1,0 +1,34 @@
+﻿<Window x:Class="MVVM4Base.View.MainWindow"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+        xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+        xmlns:local="clr-namespace:MVVM4Base"
+        xmlns:i="http://schemas.microsoft.com/xaml/behaviors"
+		xmlns:c="clr-namespace:MVVM4Base.Common"
+        mc:Ignorable="d"
+        Title="MainWindow" Height="450" Width="800"
+        DataContext="{Binding Source={StaticResource Locator}, Path=Main}">
+
+	<i:Interaction.Triggers>
+		<i:EventTrigger EventName="Loaded">
+			<i:InvokeCommandAction Command="{Binding LoadedCommand}" />
+		</i:EventTrigger>
+		<i:EventTrigger EventName="Closing">
+			<c:QuitConfirmAction />
+		</i:EventTrigger>
+		<c:StringMessageTrigger Message="Quit">
+			<c:WindowCloseAction />
+		</c:StringMessageTrigger>
+	</i:Interaction.Triggers>
+
+	<Grid>
+		<Button Content="終了" Width="100" Height="20">
+			<i:Interaction.Triggers>
+				<i:EventTrigger EventName="Click">
+					<c:StringMessageSendAction Message="Quit" />
+				</i:EventTrigger>
+			</i:Interaction.Triggers>
+		</Button>
+	</Grid>
+</Window>
