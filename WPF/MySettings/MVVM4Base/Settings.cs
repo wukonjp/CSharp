@@ -1,6 +1,21 @@
-﻿namespace MVVM4Base.Properties {
-    
-    
+﻿using System.Collections.Generic;
+using System.Configuration;
+
+namespace MVVM4Base.Properties {
+
+    public class Person
+    {
+        public string Name { get; set; } = "山本";
+
+        public int Age { get; set; } = 18;
+
+        public static readonly Person Default = new Person();
+
+        public Person()
+        {
+        }
+    }
+
     // このクラスでは設定クラスでの特定のイベントを処理することができます:
     //  SettingChanging イベントは、設定値が変更される前に発生します。
     //  PropertyChanged イベントは、設定値が変更された後に発生します。
@@ -23,6 +38,19 @@
         
         private void SettingsSavingEventHandler(object sender, System.ComponentModel.CancelEventArgs e) {
             // SettingsSaving イベントを処理するコードをここに追加してください。
+        }
+
+        [UserScopedSetting()]
+        public List<Person> People
+        {
+            get
+            {
+                return (List<Person>)this[nameof(People)];
+            }
+            set
+            {
+                this[nameof(People)] = value;
+            }
         }
     }
 }
