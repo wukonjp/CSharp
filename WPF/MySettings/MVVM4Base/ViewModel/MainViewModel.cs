@@ -54,6 +54,12 @@ namespace MVVM4Base.ViewModel
 			ApplyTemporary();
 		}));
 
+		private RelayCommand _cancelCommand;
+		public RelayCommand CancelCommand => _cancelCommand ?? (_cancelCommand = new RelayCommand(() =>
+		{
+			ResetTemporary();
+		}));
+
 		private RelayCommand _dataCountChangeCommand;
 		public RelayCommand DataCountChangeCommand => _dataCountChangeCommand ?? (_dataCountChangeCommand = new RelayCommand(() =>
 		{

@@ -61,6 +61,13 @@
 					</i:EventTrigger>
 				</i:Interaction.Triggers>
 			</Button>
+			<Button Content="キャンセル">
+				<i:Interaction.Triggers>
+					<i:EventTrigger EventName="Click">
+						<i:InvokeCommandAction Command="{Binding CancelCommand}" />
+					</i:EventTrigger>
+				</i:Interaction.Triggers>
+			</Button>
 		</StackPanel>
 		<DataGrid Grid.Row="1" ItemsSource="{Binding PeopleTemp}" CanUserAddRows="False" CanUserDeleteRows="False" CanUserResizeRows="False" />
 		<StackPanel Grid.Row="2" Orientation="Horizontal">
