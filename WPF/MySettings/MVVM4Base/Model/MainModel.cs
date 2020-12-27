@@ -11,32 +11,52 @@ namespace MVVM4Base.Model
 {
 	public class MainModel : ObservableObject
 	{
-		private readonly DataService _dataService;
+		private DataService _dataService;
+
+		private int _dataCount;
+		public int DataCount
+		{
+			get { return _dataCount; }
+			set
+			{
+				if(_dataCount != value)
+				{
+					_dataCount = value;
+					RaisePropertyChanged();
+				}
+			}
+		}
 
 		public ObservableCollection<Person> People { get; private set; } = new ObservableCollection<Person>();
 
 		public MainModel(DataService dataService)
 		{
 			_dataService = dataService;
-
-			ReadSetting();
 		}
 
 		public void ReadSetting()
 		{
-			People.Clear();
+			_dataCount = Properties.Settings.Default.DataCount;
 
-			var peopleSetting = (List<Properties.Person>)Properties.Settings.Default["People"];		// コンストラクタから呼び出される場合はインデクサを使わないとnullになる
-			//var peopleSetting = (List<Properties.Person>)Properties.Settings.Default.People;
-			if (peopleSetting != null)
+			// 要素数を合わせる
+			People.Clear();
+			//var peopleSetting = (List<Properties.Person>)Properties.Settings.Default["People"];		// MainViewModelが構築される前はインデクサを使わないとnullになる
+			var peopleSetting = Properties.Settings.Default.People;
+			for (int i = 0; i < _dataCount; i++)
 			{
-				foreach (var personSetting in peopleSetting)
+				var person = new Person();
+				if ((peopleSetting == null) || (i >= peopleSetting.Count))
 				{
-					var person = new Person();
-					person.Name = personSetting.Name;
-					person.Age = personSetting.Age;
-					People.Add(person);
+					person.Name = Properties.Person.Default.Name;
+					person.Age = Properties.Person.Default.Age;
 				}
+				else
+				{
+					person.Name = peopleSetting[i].Name;
+					person.Age = peopleSetting[i].Age;
+				}
+
+				People.Add(person);
 			}
 		}
 
@@ -47,18 +67,19 @@ namespace MVVM4Base.Model
 				person.Name = Properties.Person.Default.Name;
 				person.Age = Properties.Person.Default.Age;
 			}
-
-			WriteSetting();
 		}
 
 		public void WriteSetting()
 		{
+			Properties.Settings.Default.DataCount = _dataCount;
+
 			var peopleSetting = new List<Properties.Person>();
 			foreach (var person in People)
 			{
 				var personSetting = new Properties.Person();
 				personSetting.Name = person.Name;
 				personSetting.Age = person.Age;
+
 				peopleSetting.Add(personSetting);
 			}
 			Properties.Settings.Default.People = peopleSetting;

@@ -8,9 +8,10 @@
 		xmlns:c="clr-namespace:MVVM4Base.Common"
         mc:Ignorable="d"
         Title="MainWindow"
-		Height="251"
+		Height="450"
 		Width="480"
-        DataContext="{Binding Source={StaticResource Locator}, Path=Main}">
+        DataContext="{Binding Source={StaticResource Locator}, Path=Main}"
+		WindowStartupLocation="CenterScreen">
 
 	<i:Interaction.Triggers>
 		<i:EventTrigger EventName="Loaded">
@@ -32,12 +33,58 @@
 
 	<Grid>
 		<Grid.RowDefinitions>
-			<RowDefinition Height="252*"/>
-			<RowDefinition Height="50"/>
+			<RowDefinition Height="24"/>
+			<RowDefinition Height="200*"/>
+			<RowDefinition Height="24"/>
+			<RowDefinition Height="200*"/>
+			<RowDefinition Height="40"/>
 		</Grid.RowDefinitions>
-		<DataGrid Grid.Row="0" ItemsSource="{Binding MainModel.People}">
-		</DataGrid>
-		<StackPanel Grid.Row="1" Orientation="Vertical">
+		<StackPanel Grid.Row="0" Orientation="Horizontal">
+			<Label Content="仮データ数：" />
+			<ComboBox SelectedIndex="{Binding DataCountTemp}">
+				<ComboBoxItem Content="0" />
+				<ComboBoxItem Content="1" />
+				<ComboBoxItem Content="2" />
+				<ComboBoxItem Content="3" />
+				<ComboBoxItem Content="4" />
+				<ComboBoxItem Content="5" />
+				<i:Interaction.Triggers>
+					<i:EventTrigger EventName="SelectionChanged">
+						<i:InvokeCommandAction Command="{Binding DataCountChangeCommand}" />
+					</i:EventTrigger>
+				</i:Interaction.Triggers>
+			</ComboBox>
+			<Button Content="適用">
+				<i:Interaction.Triggers>
+					<i:EventTrigger EventName="Click">
+						<i:InvokeCommandAction Command="{Binding ApplyCommand}" />
+					</i:EventTrigger>
+				</i:Interaction.Triggers>
+			</Button>
+		</StackPanel>
+		<DataGrid Grid.Row="1" ItemsSource="{Binding PeopleTemp}" CanUserAddRows="False" CanUserDeleteRows="False" CanUserResizeRows="False" />
+		<StackPanel Grid.Row="2" Orientation="Horizontal">
+			<Label Content="実データ数：" />
+			<Label Content="{Binding MainModel.DataCount}" />
+		</StackPanel>
+		<ItemsControl Grid.Row="3"  ItemsSource="{Binding MainModel.People}">
+			<ItemsControl.ItemsPanel>
+				<ItemsPanelTemplate>
+					<WrapPanel Orientation="Horizontal" />
+				</ItemsPanelTemplate>
+			</ItemsControl.ItemsPanel>
+			<ItemsControl.ItemTemplate>
+				<DataTemplate>
+					<Border BorderBrush="Red" BorderThickness="2" CornerRadius="3">
+						<StackPanel Orientation="Horizontal" >
+							<Label Content="{Binding Name}" />
+							<Label Content="{Binding Age}" />
+						</StackPanel>
+					</Border>
+				</DataTemplate>
+			</ItemsControl.ItemTemplate>
+		</ItemsControl>
+		<StackPanel Grid.Row="4" Orientation="Vertical">
 			<Button Content="リセット">
 				<i:Interaction.Triggers>
 					<i:EventTrigger EventName="Click">

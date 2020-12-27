@@ -86,7 +86,6 @@
     <Compile Include="Model\DataService.cs" />
     <Compile Include="Model\MainModel.cs" />
     <Compile Include="Model\Person.cs" />
-    <Compile Include="Properties\CustomSettings.cs" />
     <Compile Include="Settings.cs" />
     <Compile Include="ViewModel\MainViewModel.cs" />
     <Compile Include="ViewModel\ViewModelLocator.cs" />

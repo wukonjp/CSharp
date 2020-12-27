@@ -26,12 +26,12 @@ namespace MVVM4Base.Properties {
         [global::System.Configuration.UserScopedSettingAttribute()]
         [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
         [global::System.Configuration.DefaultSettingValueAttribute("1")]
-        public int TestNumber {
+        public int DataCount {
             get {
-                return ((int)(this["TestNumber"]));
+                return ((int)(this["DataCount"]));
             }
             set {
-                this["TestNumber"] = value;
+                this["DataCount"] = value;
             }
         }
     }

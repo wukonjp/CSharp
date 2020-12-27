@@ -2,7 +2,7 @@
 <SettingsFile xmlns="http://schemas.microsoft.com/VisualStudio/2004/01/settings" CurrentProfile="(Default)" GeneratedClassNamespace="MVVM4Base.Properties" GeneratedClassName="Settings">
   <Profiles />
   <Settings>
-    <Setting Name="TestNumber" Type="System.Int32" Scope="User">
+    <Setting Name="DataCount" Type="System.Int32" Scope="User">
       <Value Profile="(Default)">1</Value>
     </Setting>
   </Settings>
