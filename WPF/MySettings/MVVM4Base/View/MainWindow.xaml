@@ -79,7 +79,8 @@
 					<MenuItem ItemsSource="{Binding MainModel.People}" Header="送信">
 						<MenuItem.ItemContainerStyle>
 							<Style TargetType="MenuItem">
-								<Setter Property="Header" Value="{Binding Name}" />
+								<Setter Property="Header" Value="{Binding ID}" />
+								<Setter Property="HeaderStringFormat" Value="個人番号{0}" />
 								<Setter Property="IsChecked" Value="{Binding IsSend}" />
 								<Setter Property="Command" Value="{Binding DataContext.ChangeIsSendCommand, RelativeSource={RelativeSource Mode=FindAncestor, AncestorType=Window}}" />
 								<Setter Property="CommandParameter" Value="{Binding}" />
@@ -108,7 +109,7 @@
 						<StackPanel Orientation="Horizontal" >
 							<TextBlock>
 								<TextBlock.Text>
-									<MultiBinding StringFormat="ID{0}:{1}{2}歳 {3}">
+									<MultiBinding StringFormat="ID{0} {1}{2}歳 {3}">
 										<Binding Path="ID" />
 										<Binding Path="Name" />
 										<Binding Path="Age" />
