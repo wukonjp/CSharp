@@ -1,6 +1,7 @@
 using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
+using System.Windows;
 using GalaSoft.MvvmLight;
 using GalaSoft.MvvmLight.CommandWpf;
 using MVVM4Base.Common;
@@ -77,6 +78,25 @@ namespace MVVM4Base.ViewModel
 		{
 			MainModel.WriteSetting();
 			Properties.Settings.Default.Save();
+		}));
+
+		private RelayCommand<Person> _changeIsSendCommand;
+		public RelayCommand<Person> ChangeIsSendCommand => _changeIsSendCommand ?? (_changeIsSendCommand = new RelayCommand<Person>((person) =>
+		{
+			int index = MainModel.People.IndexOf(person);
+			if(index > 0)
+			{
+				if (person.IsSend)
+				{
+					person.IsSend = false;
+					MessageBox.Show(string.Format("Index{0}ÇOFFÇ…ÇµÇ‹ÇµÇΩÅB", index));
+				}
+				else
+				{
+					person.IsSend = true;
+					MessageBox.Show(string.Format("Index{0}ÇONÇ…ÇµÇ‹ÇµÇΩÅB", index));
+				}
+			}
 		}));
 
 		private RelayCommand _applyToTemporaryCommand;
