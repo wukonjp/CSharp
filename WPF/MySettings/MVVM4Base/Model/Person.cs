@@ -9,6 +9,13 @@ namespace MVVM4Base.Model
 {
 	public class Person : ObservableObject
 	{
+		public int Index { get; private set; }
+
+		public int ID
+		{
+			get { return Index + 1; }
+		}
+
 		private string _name = "田中";
 		public string Name
 		{
@@ -49,6 +56,11 @@ namespace MVVM4Base.Model
 					RaisePropertyChanged();
 				}
 			}
+		}
+
+		public Person(int index)
+		{
+			Index = index;
 		}
 	}
 }

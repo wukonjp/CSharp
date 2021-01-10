@@ -84,17 +84,17 @@ namespace MVVM4Base.ViewModel
 		public RelayCommand<Person> ChangeIsSendCommand => _changeIsSendCommand ?? (_changeIsSendCommand = new RelayCommand<Person>((person) =>
 		{
 			int index = MainModel.People.IndexOf(person);
-			if(index > 0)
+			if(index >= 0)
 			{
 				if (person.IsSend)
 				{
 					person.IsSend = false;
-					MessageBox.Show(string.Format("Index{0}をOFFにしました。", index));
+					MessageBox.Show(string.Format("ID{0}(Index{1})をOFFにしました。", person.ID, index));
 				}
 				else
 				{
 					person.IsSend = true;
-					MessageBox.Show(string.Format("Index{0}をONにしました。", index));
+					MessageBox.Show(string.Format("ID{0}(Index{1})をONにしました。", person.ID, index));
 				}
 			}
 		}));
@@ -129,9 +129,11 @@ namespace MVVM4Base.ViewModel
 			DataCountTemp = MainModel.DataCount;
 
 			PeopleTemp.Clear();
-			foreach(var person in MainModel.People)
+			int count = MainModel.People.Count;
+			for (int i = 0; i < count; i++)
 			{
-				var personTemp = new Person();
+				var person = MainModel.People[i];
+				var personTemp = new Person(i);
 				personTemp.Name = person.Name;
 				personTemp.Age = person.Age;
 				personTemp.IsSend = person.IsSend;
@@ -143,22 +145,21 @@ namespace MVVM4Base.ViewModel
 		private void ChangeTemporaryDataCount()
 		{
 			int oldCount = PeopleTemp.Count;
+			int newCount = DataCountTemp;
 
 			// 要素数を合わせる
-			if (oldCount < DataCountTemp)
+			if (oldCount < newCount)
 			{
-				int count = DataCountTemp - oldCount;
-				for (int i = 0; i < count; i++)
+				for (int i = oldCount; i < newCount; i++)
 				{
-					PeopleTemp.Add(new Person());
+					PeopleTemp.Add(new Person(i));
 				}
 			}
-			else if (oldCount > DataCountTemp)
+			else if (oldCount > newCount)
 			{
-				int count = oldCount - DataCountTemp;
-				for (int i = 0; i < count; i++)
+				while (PeopleTemp.Count > newCount)
 				{
-					PeopleTemp.RemoveAt(DataCountTemp);
+					PeopleTemp.RemoveAt(PeopleTemp.Count - 1);
 				}
 			}
 			else
@@ -169,21 +170,23 @@ namespace MVVM4Base.ViewModel
 
 		private void Apply()
 		{
+			var people = MainModel.People;
+			int oldCount = people.Count;
+			int newCount = DataCountTemp;
+
 			// 要素数を合わせる
-			if(MainModel.DataCount < DataCountTemp)
+			if (oldCount < newCount)
 			{
-				int count = DataCountTemp - MainModel.DataCount;
-				for (int i=0; i<count; i++)
+				for (int i = oldCount; i < newCount; i++)
 				{
-					MainModel.People.Add(new Person());
+					people.Add(new Person(i));
 				}
 			}
-			else if (MainModel.DataCount > DataCountTemp)
+			else if (oldCount > newCount)
 			{
-				int count = MainModel.DataCount - DataCountTemp;
-				for (int i = 0; i < count; i++)
+				while (people.Count > newCount)
 				{
-					MainModel.People.RemoveAt(DataCountTemp);
+					people.RemoveAt(people.Count - 1);
 				}
 			}
 			else
@@ -192,10 +195,10 @@ namespace MVVM4Base.ViewModel
 			}
 
 			// 各要素のプロパティを適用
-			MainModel.DataCount = DataCountTemp;
-			for (int i = 0; i < DataCountTemp; i++)
+			MainModel.DataCount = newCount;
+			for (int i = 0; i < newCount; i++)
 			{
-				var person = MainModel.People[i];
+				var person = people[i];
 				var personTemp = PeopleTemp[i];
 				person.Name = personTemp.Name;
 				person.Age = personTemp.Age;
@@ -205,21 +208,22 @@ namespace MVVM4Base.ViewModel
 
 		private void ApplyToTemporary()
 		{
+			int oldCount = DataCountTemp;
+			int newCount = MainModel.DataCount;
+
 			// 要素数を合わせる
-			if (DataCountTemp < MainModel.DataCount)
+			if (oldCount < newCount)
 			{
-				int count = MainModel.DataCount - DataCountTemp;
-				for (int i = 0; i < count; i++)
+				for (int i = oldCount; i < newCount; i++)
 				{
-					PeopleTemp.Add(new Person());
+					PeopleTemp.Add(new Person(i));
 				}
 			}
-			else if (DataCountTemp > MainModel.DataCount)
+			else if (oldCount > newCount)
 			{
-				int count = DataCountTemp - MainModel.DataCount;
-				for (int i = 0; i < count; i++)
+				while(PeopleTemp.Count > newCount)
 				{
-					PeopleTemp.RemoveAt(MainModel.DataCount);
+					PeopleTemp.RemoveAt(PeopleTemp.Count - 1);
 				}
 			}
 			else
@@ -228,10 +232,11 @@ namespace MVVM4Base.ViewModel
 			}
 
 			// 各要素のプロパティを適用
-			DataCountTemp = MainModel.DataCount;
-			for (int i = 0; i < MainModel.DataCount; i++)
+			DataCountTemp = newCount;
+			var people = MainModel.People;
+			for (int i = 0; i < newCount; i++)
 			{
-				var person = MainModel.People[i];
+				var person = people[i];
 				var personTemp = PeopleTemp[i];
 				personTemp.Name = person.Name;
 				personTemp.Age = person.Age;

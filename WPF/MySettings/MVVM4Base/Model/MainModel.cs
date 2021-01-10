@@ -40,11 +40,10 @@ namespace MVVM4Base.Model
 
 			// 要素数を合わせる
 			People.Clear();
-			//var peopleSetting = (List<Properties.Person>)Properties.Settings.Default["People"];		// MainViewModelが構築される前はインデクサを使わないとnullになる
 			var peopleSetting = Properties.Settings.Default.People;
 			for (int i = 0; i < _dataCount; i++)
 			{
-				var person = new Person();
+				var person = new Person(i);
 				if ((peopleSetting == null) || (i >= peopleSetting.Count))
 				{
 					person.Name = Properties.Person.Default.Name;
@@ -64,8 +63,9 @@ namespace MVVM4Base.Model
 
 		public void ResetSetting()
 		{
-			foreach (var person in People)
+			for (int i=0; i< People.Count;  i++)
 			{
+				var person = People[i];
 				person.Name = Properties.Person.Default.Name;
 				person.Age = Properties.Person.Default.Age;
 				person.IsSend = Properties.Person.Default.IsSend;

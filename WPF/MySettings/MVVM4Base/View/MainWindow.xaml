@@ -106,9 +106,16 @@
 				<DataTemplate>
 					<Border BorderBrush="Red" BorderThickness="2" CornerRadius="3">
 						<StackPanel Orientation="Horizontal" >
-							<Label Content="{Binding Name}" />
-							<Label Content="{Binding Age}" />
-							<Label Content="{Binding IsSend}" />
+							<TextBlock>
+								<TextBlock.Text>
+									<MultiBinding StringFormat="ID{0}:{1}{2}歳 {3}">
+										<Binding Path="ID" />
+										<Binding Path="Name" />
+										<Binding Path="Age" />
+										<Binding Path="IsSend" />
+									</MultiBinding>
+								</TextBlock.Text>
+							</TextBlock>
 						</StackPanel>
 					</Border>
 				</DataTemplate>
