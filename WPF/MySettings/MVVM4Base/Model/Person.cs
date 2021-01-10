@@ -7,7 +7,7 @@ using GalaSoft.MvvmLight;
 
 namespace MVVM4Base.Model
 {
-	public class Person : ObservableObject
+	public class Person : ObservableObject, ICloneable
 	{
 		public int Index { get; private set; }
 
@@ -61,6 +61,46 @@ namespace MVVM4Base.Model
 		public Person(int index)
 		{
 			Index = index;
+			Reset();
+		}
+
+		public Person(int index, Properties.Person settingPerson)
+		{
+			Index = index;
+			Reset(settingPerson);
+		}
+
+		public void Reset()
+		{
+			Reset(Properties.Person.Default);
+		}
+
+		public void Reset(Properties.Person settingPerson)
+		{
+			_name = settingPerson.Name;
+			_age = settingPerson.Age;
+			_isSend = settingPerson.IsSend;
+		}
+
+		public void Apply(Person person)
+		{
+			this.Name = person.Name;
+			this.Age = person.Age;
+			this.IsSend = person.IsSend;
+		}
+
+		public Properties.Person ToSetting()
+		{
+			var settingPerson = new Properties.Person();
+			settingPerson.Name = _name;
+			settingPerson.Age = _age;
+			settingPerson.IsSend = _isSend;
+			return settingPerson;
+		}
+
+		public object Clone()
+		{
+			return MemberwiseClone();
 		}
 	}
 }

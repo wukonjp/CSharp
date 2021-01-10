@@ -128,16 +128,12 @@ namespace MVVM4Base.ViewModel
 		{
 			DataCountTemp = MainModel.DataCount;
 
+			var people = MainModel.People;
 			PeopleTemp.Clear();
-			int count = MainModel.People.Count;
-			for (int i = 0; i < count; i++)
+			for (int i = 0; i < people.Count; i++)
 			{
-				var person = MainModel.People[i];
-				var personTemp = new Person(i);
-				personTemp.Name = person.Name;
-				personTemp.Age = person.Age;
-				personTemp.IsSend = person.IsSend;
-
+				var person = people[i];
+				var personTemp = (Person)person.Clone();
 				PeopleTemp.Add(personTemp);
 			}
 		}
@@ -198,11 +194,10 @@ namespace MVVM4Base.ViewModel
 			MainModel.DataCount = newCount;
 			for (int i = 0; i < newCount; i++)
 			{
-				var person = people[i];
 				var personTemp = PeopleTemp[i];
-				person.Name = personTemp.Name;
-				person.Age = personTemp.Age;
-				person.IsSend = personTemp.IsSend;
+
+				var person = people[i];
+				person.Apply(personTemp);
 			}
 		}
 
@@ -237,10 +232,9 @@ namespace MVVM4Base.ViewModel
 			for (int i = 0; i < newCount; i++)
 			{
 				var person = people[i];
+
 				var personTemp = PeopleTemp[i];
-				personTemp.Name = person.Name;
-				personTemp.Age = person.Age;
-				personTemp.IsSend = person.IsSend;
+				personTemp.Apply(person);
 			}
 		}
 	}

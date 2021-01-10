@@ -38,23 +38,22 @@ namespace MVVM4Base.Model
 		{
 			_dataCount = Properties.Settings.Default.DataCount;
 
-			// 要素数を合わせる
-			People.Clear();
 			var peopleSetting = Properties.Settings.Default.People;
+			if (peopleSetting == null)
+			{
+				Properties.Settings.Default.People = new List<Properties.Person>();
+			}
+
 			for (int i = 0; i < _dataCount; i++)
 			{
-				var person = new Person(i);
-				if ((peopleSetting == null) || (i >= peopleSetting.Count))
+				Person person;
+				if (i >= peopleSetting.Count)
 				{
-					person.Name = Properties.Person.Default.Name;
-					person.Age = Properties.Person.Default.Age;
-					person.IsSend = Properties.Person.Default.IsSend;
+					person = new Person(i);
 				}
 				else
 				{
-					person.Name = peopleSetting[i].Name;
-					person.Age = peopleSetting[i].Age;
-					person.IsSend = peopleSetting[i].IsSend;
+					person = new Person(i, peopleSetting[i]);
 				}
 
 				People.Add(person);
@@ -66,9 +65,7 @@ namespace MVVM4Base.Model
 			for (int i=0; i< People.Count;  i++)
 			{
 				var person = People[i];
-				person.Name = Properties.Person.Default.Name;
-				person.Age = Properties.Person.Default.Age;
-				person.IsSend = Properties.Person.Default.IsSend;
+				person.Reset();
 			}
 		}
 
@@ -76,17 +73,13 @@ namespace MVVM4Base.Model
 		{
 			Properties.Settings.Default.DataCount = _dataCount;
 
-			var peopleSetting = new List<Properties.Person>();
+			var peopleSetting = Properties.Settings.Default.People;
+			peopleSetting.Clear();
 			foreach (var person in People)
 			{
-				var personSetting = new Properties.Person();
-				personSetting.Name = person.Name;
-				personSetting.Age = person.Age;
-				personSetting.IsSend = person.IsSend;
-
+				var personSetting = person.ToSetting();
 				peopleSetting.Add(personSetting);
 			}
-			Properties.Settings.Default.People = peopleSetting;
 		}
 	}
 }

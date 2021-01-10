@@ -123,7 +123,7 @@
 			</ItemsControl.ItemTemplate>
 		</ItemsControl>
 		<StackPanel Grid.Row="4" Orientation="Vertical">
-			<Button Content="リセット">
+			<Button Content="リセット（要再起動）">
 				<i:Interaction.Triggers>
 					<i:EventTrigger EventName="Click">
 						<c:StringMessageSendAction Message="Reset" />
