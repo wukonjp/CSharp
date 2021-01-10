@@ -49,11 +49,13 @@ namespace MVVM4Base.Model
 				{
 					person.Name = Properties.Person.Default.Name;
 					person.Age = Properties.Person.Default.Age;
+					person.IsSend = Properties.Person.Default.IsSend;
 				}
 				else
 				{
 					person.Name = peopleSetting[i].Name;
 					person.Age = peopleSetting[i].Age;
+					person.IsSend = peopleSetting[i].IsSend;
 				}
 
 				People.Add(person);
@@ -66,6 +68,7 @@ namespace MVVM4Base.Model
 			{
 				person.Name = Properties.Person.Default.Name;
 				person.Age = Properties.Person.Default.Age;
+				person.IsSend = Properties.Person.Default.IsSend;
 			}
 		}
 
@@ -79,6 +82,7 @@ namespace MVVM4Base.Model
 				var personSetting = new Properties.Person();
 				personSetting.Name = person.Name;
 				personSetting.Age = person.Age;
+				personSetting.IsSend = person.IsSend;
 
 				peopleSetting.Add(personSetting);
 			}

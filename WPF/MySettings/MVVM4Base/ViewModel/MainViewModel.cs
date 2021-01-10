@@ -51,7 +51,7 @@ namespace MVVM4Base.ViewModel
 		private RelayCommand _applyCommand;
 		public RelayCommand ApplyCommand => _applyCommand ?? (_applyCommand = new RelayCommand(() =>
 		{
-			ApplyTemporary();
+			Apply();
 		}));
 
 		private RelayCommand _cancelCommand;
@@ -77,6 +77,12 @@ namespace MVVM4Base.ViewModel
 		{
 			MainModel.WriteSetting();
 			Properties.Settings.Default.Save();
+		}));
+
+		private RelayCommand _applyToTemporaryCommand;
+		public RelayCommand ApplyToTemporaryCommand => _applyToTemporaryCommand ?? (_applyToTemporaryCommand = new RelayCommand(() =>
+		{
+			ApplyToTemporary();
 		}));
 
 		/// <summary>
@@ -108,6 +114,7 @@ namespace MVVM4Base.ViewModel
 				var personTemp = new Person();
 				personTemp.Name = person.Name;
 				personTemp.Age = person.Age;
+				personTemp.IsSend = person.IsSend;
 
 				PeopleTemp.Add(personTemp);
 			}
@@ -140,7 +147,7 @@ namespace MVVM4Base.ViewModel
 			}
 		}
 
-		private void ApplyTemporary()
+		private void Apply()
 		{
 			// 要素数を合わせる
 			if(MainModel.DataCount < DataCountTemp)
@@ -172,6 +179,43 @@ namespace MVVM4Base.ViewModel
 				var personTemp = PeopleTemp[i];
 				person.Name = personTemp.Name;
 				person.Age = personTemp.Age;
+				person.IsSend = personTemp.IsSend;
+			}
+		}
+
+		private void ApplyToTemporary()
+		{
+			// 要素数を合わせる
+			if (DataCountTemp < MainModel.DataCount)
+			{
+				int count = MainModel.DataCount - DataCountTemp;
+				for (int i = 0; i < count; i++)
+				{
+					PeopleTemp.Add(new Person());
+				}
+			}
+			else if (DataCountTemp > MainModel.DataCount)
+			{
+				int count = DataCountTemp - MainModel.DataCount;
+				for (int i = 0; i < count; i++)
+				{
+					PeopleTemp.RemoveAt(MainModel.DataCount);
+				}
+			}
+			else
+			{
+				// nop
+			}
+
+			// 各要素のプロパティを適用
+			DataCountTemp = MainModel.DataCount;
+			for (int i = 0; i < MainModel.DataCount; i++)
+			{
+				var person = MainModel.People[i];
+				var personTemp = PeopleTemp[i];
+				personTemp.Name = person.Name;
+				personTemp.Age = person.Age;
+				personTemp.IsSend = person.IsSend;
 			}
 		}
 	}

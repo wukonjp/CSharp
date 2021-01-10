@@ -36,5 +36,19 @@ namespace MVVM4Base.Model
 				}
 			}
 		}
+
+		private bool _isSend = true;
+		public bool IsSend
+		{
+			get { return _isSend; }
+			set
+			{
+				if (_isSend != value)
+				{
+					_isSend = value;
+					RaisePropertyChanged();
+				}
+			}
+		}
 	}
 }

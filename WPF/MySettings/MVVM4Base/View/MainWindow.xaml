@@ -54,7 +54,7 @@
 					</i:EventTrigger>
 				</i:Interaction.Triggers>
 			</ComboBox>
-			<Button Content="適用">
+			<Button Content="実データへ適用">
 				<i:Interaction.Triggers>
 					<i:EventTrigger EventName="Click">
 						<i:InvokeCommandAction Command="{Binding ApplyCommand}" />
@@ -69,10 +69,31 @@
 				</i:Interaction.Triggers>
 			</Button>
 		</StackPanel>
-		<DataGrid Grid.Row="1" ItemsSource="{Binding PeopleTemp}" CanUserAddRows="False" CanUserDeleteRows="False" CanUserResizeRows="False" />
+		<DataGrid Grid.Row="1" Name="dataGrid" ItemsSource="{Binding PeopleTemp}"
+				  CanUserAddRows="False" CanUserDeleteRows="False" CanUserResizeRows="False" SelectionUnit="FullRow" SelectionMode="Single" />
 		<StackPanel Grid.Row="2" Orientation="Horizontal">
 			<Label Content="実データ数：" />
 			<Label Content="{Binding MainModel.DataCount}" />
+			<Menu>
+				<MenuItem Header="操作" Height="24">
+					<MenuItem ItemsSource="{Binding MainModel.People}" Header="送信">
+						<MenuItem.ItemContainerStyle>
+							<Style TargetType="MenuItem">
+								<Setter Property="Header" Value="{Binding Name}" />
+								<Setter Property="IsCheckable" Value="True" />
+								<Setter Property="IsChecked" Value="{Binding IsSend}" />
+							</Style>
+						</MenuItem.ItemContainerStyle>
+					</MenuItem>
+				</MenuItem>
+			</Menu>
+			<Button Content="仮データへ適用">
+				<i:Interaction.Triggers>
+					<i:EventTrigger EventName="Click">
+						<i:InvokeCommandAction Command="{Binding ApplyToTemporaryCommand}" />
+					</i:EventTrigger>
+				</i:Interaction.Triggers>
+			</Button>
 		</StackPanel>
 		<ItemsControl Grid.Row="3"  ItemsSource="{Binding MainModel.People}">
 			<ItemsControl.ItemsPanel>
@@ -86,6 +107,7 @@
 						<StackPanel Orientation="Horizontal" >
 							<Label Content="{Binding Name}" />
 							<Label Content="{Binding Age}" />
+							<Label Content="{Binding IsSend}" />
 						</StackPanel>
 					</Border>
 				</DataTemplate>

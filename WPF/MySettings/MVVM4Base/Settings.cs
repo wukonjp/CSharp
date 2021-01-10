@@ -9,6 +9,8 @@ namespace MVVM4Base.Properties {
 
         public int Age { get; set; } = 18;
 
+        public bool IsSend { get; set; } = true;
+
         public static readonly Person Default = new Person();
 
         public Person()
