@@ -13,6 +13,10 @@
         DataContext="{Binding Source={StaticResource Locator}, Path=Main}"
 		WindowStartupLocation="CenterScreen">
 
+	<Window.Resources>
+		<c:StringJoinMultiConverter x:Key="StringJoinMultiConverter" />
+	</Window.Resources>
+	
 	<i:Interaction.Triggers>
 		<i:EventTrigger EventName="Loaded">
 			<i:InvokeCommandAction Command="{Binding LoadedCommand}" />
@@ -109,7 +113,8 @@
 						<StackPanel Orientation="Horizontal" >
 							<TextBlock>
 								<TextBlock.Text>
-									<MultiBinding StringFormat="ID{0} {1}{2}歳 {3}">
+									<!-- MultiBinding StringFormat="ID{0} {1}{2}歳 {3}" -->
+									<MultiBinding Converter="{StaticResource StringJoinMultiConverter}">
 										<Binding Path="ID" />
 										<Binding Path="Name" />
 										<Binding Path="Age" />

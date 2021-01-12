@@ -75,6 +75,7 @@
       <SubType>Designer</SubType>
     </ApplicationDefinition>
     <Compile Include="Common\DataGridSortBehavior.cs" />
+    <Compile Include="Common\StringJoinMultiConverter.cs" />
     <Compile Include="Common\StringMessageSendAction.cs" />
     <Compile Include="Common\StringMessageTrigger.cs" />
     <Compile Include="Common\WIndowCloseAction.cs" />
