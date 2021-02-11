@@ -61,10 +61,27 @@ namespace MVVM4Base.ViewModel
 			}
 		}));
 
+		bool _isAdjusting;
+
 		private RelayCommand<Person> _genderChangedCommand;
 		public RelayCommand<Person> GenderChangedCommand =>
 			_genderChangedCommand ?? (_genderChangedCommand = new RelayCommand<Person>((person) =>
 		{
+			if (_isAdjusting)
+			{
+				return;
+			}
+			_isAdjusting = true;
+
+			foreach(var other in People)
+			{
+				if (other != person)
+				{
+					other.Gender = (other.Gender == 1) ? 0 : 1;
+				}
+			}
+
+			_isAdjusting = false;
 		}));
 
 		/// <summary>
