@@ -61,8 +61,9 @@ namespace MVVM4Base.ViewModel
 			}
 		}));
 
-		private RelayCommand _genderChangedCommand;
-		public RelayCommand GenderChangedCommand => _genderChangedCommand ?? (_genderChangedCommand = new RelayCommand(() =>
+		private RelayCommand<Person> _genderChangedCommand;
+		public RelayCommand<Person> GenderChangedCommand =>
+			_genderChangedCommand ?? (_genderChangedCommand = new RelayCommand<Person>((person) =>
 		{
 		}));
 

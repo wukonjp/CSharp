@@ -87,13 +87,15 @@
 		</DataGrid>
 		<!-- 単一ソースの変更イベントを複数のViewが監視＆アクションするとアクションが複数回呼ばれてしまう -->
 		<!-- これを防ぐためダミーコントロールを用意して監視＆アクションを1箇所に集約する -->
-		<ItemsControl ItemsSource="{Binding People}">
+		<ItemsControl x:Name="dummy" ItemsSource="{Binding People}">
 			<ItemsControl.ItemTemplate>
 				<DataTemplate>
 					<FrameworkElement Visibility="Collapsed">
 						<i:Interaction.Triggers>
 							<i:PropertyChangedTrigger Binding="{Binding Gender}">
-								<i:InvokeCommandAction Command="{Binding DataContext.GenderChangedCommand, ElementName=mainWindow}" />
+								<i:InvokeCommandAction
+									Command="{Binding DataContext.GenderChangedCommand, ElementName=mainWindow}"
+									CommandParameter="{Binding}"/>
 							</i:PropertyChangedTrigger>
 						</i:Interaction.Triggers>
 					</FrameworkElement>
