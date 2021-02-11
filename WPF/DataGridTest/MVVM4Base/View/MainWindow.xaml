@@ -31,7 +31,7 @@
 			<RowDefinition Height="190*"/>
 			<RowDefinition Height="229*"/>
 		</Grid.RowDefinitions>
-		<DataGrid ItemsSource="{Binding People}" AutoGenerateColumns="False" Grid.Row="0">
+		<DataGrid x:Name="dataGrid1" ItemsSource="{Binding People}" AutoGenerateColumns="False" Grid.Row="0" SelectionMode="Single" CanUserAddRows="False">
 			<DataGrid.Columns>
 				<DataGridTemplateColumn Header="ID">
 					<DataGridTemplateColumn.CellTemplate>
@@ -60,7 +60,7 @@
 				</DataGridTemplateColumn>
 			</DataGrid.Columns>
 		</DataGrid>
-		<DataGrid ItemsSource="{Binding People}" AutoGenerateColumns="False" Grid.Row="1" IsReadOnly="True" >
+		<DataGrid x:Name="dataGrid2" ItemsSource="{Binding People}" AutoGenerateColumns="False" Grid.Row="1" IsReadOnly="True" SelectionMode="Single" CanUserAddRows="False">
 			<DataGrid.CellStyle>
 				<Style TargetType="DataGridCell">
 					<!-- バインドしたプロパティで背景を制御（全セルに適用） -->
