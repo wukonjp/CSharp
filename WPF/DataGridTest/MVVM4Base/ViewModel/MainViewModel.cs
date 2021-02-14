@@ -4,6 +4,7 @@ using MVVM4Base.Common;
 using MVVM4Base.Model;
 using System;
 using System.Collections.ObjectModel;
+using System.Diagnostics;
 using System.Windows;
 using System.Windows.Media;
 
@@ -25,7 +26,7 @@ namespace MVVM4Base.ViewModel
 	{
 		private IDataService _dataService;
 
-		public ObservableCollection<Person> People
+		public ObservableObjectCollection<Person> People
 		{
 			get { return _dataService.People; }
 		}
@@ -46,6 +47,7 @@ namespace MVVM4Base.ViewModel
 		private RelayCommand _loadedCommand;
 		public RelayCommand LoadedCommand => _loadedCommand ?? (_loadedCommand = new RelayCommand(() =>
 		{
+			People.ItemsPropertyChanged += People_ItemsPropertyChanged;
 		}));
 
 		private RelayCommand _cellDoubleClickedCommand;
@@ -98,6 +100,16 @@ namespace MVVM4Base.ViewModel
 			{
 				// Code runs "for real"
 				_dataService = dataService;
+			}
+		}
+
+		private void People_ItemsPropertyChanged(object sender, ItemsPropertyChangedEventArgs<Person> e)
+		{
+			switch(e.PropertyName)
+			{
+				case "Name":
+					Debug.WriteLine("{0} is Changed. Valu={1}.", e.PropertyName, e.Item.Name);
+					break;
 			}
 		}
 	}

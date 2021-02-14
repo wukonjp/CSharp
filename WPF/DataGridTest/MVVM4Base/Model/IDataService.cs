@@ -10,6 +10,6 @@ namespace MVVM4Base.Model
 {
     public interface IDataService
     {
-        ObservableCollection<Person> People { get; }
+        ObservableObjectCollection<Person> People { get; }
     }
 }

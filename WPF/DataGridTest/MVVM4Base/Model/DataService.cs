@@ -9,11 +9,11 @@ namespace MVVM4Base.Model
 {
 	public class DataService : IDataService
 	{
-		public ObservableCollection<Person> People { get; private set; }
+		public ObservableObjectCollection<Person> People { get; private set; }
 
 		public DataService()
 		{
-			People = new ObservableCollection<Person>()
+			People = new ObservableObjectCollection<Person>()
 			{
 				new Person() { ID = 1, Name = "田中", Age = 18, Gender = 1 },
 				new Person() { ID = 2, Name = "山田", Age = 28, Gender = 0 },
