@@ -100,6 +100,7 @@
     <Compile Include="Common\ShowWindowAction.cs" />
     <Compile Include="Common\WindowClosingCancelAction.cs" />
     <Compile Include="Model\DataService.cs" />
+    <Compile Include="Model\ObservableObjectCollection.cs" />
     <Compile Include="Model\Person.cs" />
     <Compile Include="ViewModel\MainViewModel.cs" />
     <Compile Include="ViewModel\ViewModelLocator.cs" />
