@@ -186,6 +186,19 @@ namespace LineCross.ViewModel
 			}
 		}
 
+		private Point _crossPoint;
+		public Point CrossPoint
+		{
+			get
+			{
+				return _crossPoint;
+			}
+			set
+			{
+				Set(ref _crossPoint, value);
+			}
+		}
+
 		private RelayCommand _windowLoadedCommand;
 		public RelayCommand WindowLoadedCommand => _windowLoadedCommand ?? (_windowLoadedCommand = new RelayCommand(() =>
 		{
@@ -266,6 +279,8 @@ namespace LineCross.ViewModel
 			CrossPointVisibility = Model.IsCross ? Visibility.Visible : Visibility.Collapsed;
 			CrossPointX = Model.CrossPoint.X;
 			CrossPointY = Model.CrossPoint.Y;
+
+			CrossPoint = Model.CrossPoint;
 		}
 	}
 }

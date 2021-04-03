@@ -61,6 +61,12 @@
 				StrokeThickness="2"
 				Stroke="Blue"/>
 
+			<Path StrokeThickness="2" Stroke="AliceBlue">
+				<Path.Data>
+					<EllipseGeometry Center="{Binding CrossPoint}" RadiusX="100" RadiusY="100" />
+				</Path.Data>
+			</Path>
+			
 			<Thumb
 				Canvas.Left="{Binding Line1StartX, Converter={StaticResource LeftTopOffsetConverter}, ConverterParameter={StaticResource PointSize}}"
 				Canvas.Top="{Binding Line1StartY, Converter={StaticResource LeftTopOffsetConverter}, ConverterParameter={StaticResource PointSize}}">

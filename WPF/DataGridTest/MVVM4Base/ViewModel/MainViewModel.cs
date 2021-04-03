@@ -31,16 +31,16 @@ namespace MVVM4Base.ViewModel
 			get { return _dataService.People; }
 		}
 
-		private Brush _brush = Brushes.Pink;
-		public Brush Brush
+		private Brush _backgroundbrush = Brushes.Pink;
+		public Brush BackgroundBrush
 		{
 			get
 			{
-				return _brush;
+				return _backgroundbrush;
 			}
 			set
 			{
-				Set(ref _brush, value);
+				Set(ref _backgroundbrush, value);
 			}
 		}
 
@@ -53,13 +53,13 @@ namespace MVVM4Base.ViewModel
 		private RelayCommand _cellDoubleClickedCommand;
 		public RelayCommand CellDoubleClickedCommand => _cellDoubleClickedCommand ?? (_cellDoubleClickedCommand = new RelayCommand(() =>
 		{
-			if (Brush == Brushes.Pink)
+			if (BackgroundBrush == Brushes.Pink)
 			{
-				Brush = Brushes.AliceBlue;
+				BackgroundBrush = Brushes.AliceBlue;
 			}
 			else
 			{
-				Brush = Brushes.Pink;
+				BackgroundBrush = Brushes.Pink;
 			}
 		}));
 
@@ -108,7 +108,7 @@ namespace MVVM4Base.ViewModel
 			switch(e.PropertyName)
 			{
 				case "Name":
-					Debug.WriteLine("{0} is Changed. Valu={1}.", e.PropertyName, e.Item.Name);
+					Debug.WriteLine("{0} is Changed. Value={1}.", e.PropertyName, e.Item.Name);
 					break;
 			}
 		}
