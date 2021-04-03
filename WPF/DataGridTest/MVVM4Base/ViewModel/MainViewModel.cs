@@ -6,6 +6,8 @@ using System;
 using System.Collections.ObjectModel;
 using System.Diagnostics;
 using System.Windows;
+using System.Windows.Data;
+using System.Windows.Input;
 using System.Windows.Media;
 
 namespace MVVM4Base.ViewModel
@@ -26,9 +28,9 @@ namespace MVVM4Base.ViewModel
 	{
 		private IDataService _dataService;
 
-		public ObservableObjectCollection<Person> People
+		public IDataService DataService
 		{
-			get { return _dataService.People; }
+			get { return _dataService; }
 		}
 
 		private Brush _backgroundbrush = Brushes.Pink;
@@ -47,7 +49,7 @@ namespace MVVM4Base.ViewModel
 		private RelayCommand _loadedCommand;
 		public RelayCommand LoadedCommand => _loadedCommand ?? (_loadedCommand = new RelayCommand(() =>
 		{
-			People.ItemsPropertyChanged += People_ItemsPropertyChanged;
+			_dataService.People.ItemsPropertyChanged += People_ItemsPropertyChanged;
 		}));
 
 		private RelayCommand _cellDoubleClickedCommand;
@@ -75,7 +77,7 @@ namespace MVVM4Base.ViewModel
 			}
 			_isAdjusting = true;
 
-			foreach(var other in People)
+			foreach (var other in _dataService.People)
 			{
 				if (other != person)
 				{
@@ -105,10 +107,21 @@ namespace MVVM4Base.ViewModel
 
 		private void People_ItemsPropertyChanged(object sender, ItemsPropertyChangedEventArgs<Person> e)
 		{
-			switch(e.PropertyName)
+			int index = _dataService.People.IndexOf(e.Item);
+
+			switch (e.PropertyName)
 			{
+				case "ID":
+					Debug.WriteLine("ID({0}) is Changed. Value={1}.", index, e.Item.ID);
+					break;
 				case "Name":
-					Debug.WriteLine("{0} is Changed. Value={1}.", e.PropertyName, e.Item.Name);
+					Debug.WriteLine("Name({0}) is Changed. Value={1}.", index, e.Item.Name);
+					break;
+				case "Age":
+					Debug.WriteLine("Age({0}) is Changed. Value={1}.", index, e.Item.Age);
+					break;
+				case "Gender":
+					Debug.WriteLine("Gender({0}) is Changed. Value={1}.", index, e.Item.Gender);
 					break;
 			}
 		}
