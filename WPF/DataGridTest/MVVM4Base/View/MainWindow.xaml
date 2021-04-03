@@ -32,7 +32,7 @@
 			<RowDefinition Height="229*"/>
 		</Grid.RowDefinitions>
 		<DataGrid x:Name="dataGrid1" ItemsSource="{Binding People}"
-				  AlternationCount="{ Binding People.Count}"
+				  AlternationCount="{Binding Items.Count, RelativeSource={RelativeSource Self}}"
 				  AutoGenerateColumns="False" Grid.Row="0" SelectionMode="Single" CanUserAddRows="False">
 			<!-- 行ヘッダ -->
 			<DataGrid.RowHeaderStyle>
