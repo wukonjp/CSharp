@@ -4,11 +4,11 @@ using MVVM4Base.Common;
 using MVVM4Base.Model;
 using System;
 using System.Collections.ObjectModel;
-using System.Diagnostics;
 using System.Windows;
 using System.Windows.Data;
 using System.Windows.Input;
 using System.Windows.Media;
+using System.Linq;
 
 namespace MVVM4Base.ViewModel
 {
@@ -28,9 +28,9 @@ namespace MVVM4Base.ViewModel
 	{
 		private IDataService _dataService;
 
-		public IDataService DataService
+		public MainModel MainModel
 		{
-			get { return _dataService; }
+			get { return _dataService.MainModel; }
 		}
 
 		private Brush _backgroundbrush = Brushes.Pink;
@@ -49,7 +49,6 @@ namespace MVVM4Base.ViewModel
 		private RelayCommand _loadedCommand;
 		public RelayCommand LoadedCommand => _loadedCommand ?? (_loadedCommand = new RelayCommand(() =>
 		{
-			_dataService.People.ItemsPropertyChanged += People_ItemsPropertyChanged;
 		}));
 
 		private RelayCommand _cellDoubleClickedCommand;
@@ -63,29 +62,32 @@ namespace MVVM4Base.ViewModel
 			{
 				BackgroundBrush = Brushes.Pink;
 			}
+
+			MainModel.RefreshAllView();
 		}));
 
-		bool _isAdjusting;
-
 		private RelayCommand<Person> _genderChangedCommand;
-		public RelayCommand<Person> GenderChangedCommand =>
-			_genderChangedCommand ?? (_genderChangedCommand = new RelayCommand<Person>((person) =>
+		public RelayCommand<Person> GenderChangedCommand => _genderChangedCommand ?? (_genderChangedCommand = new RelayCommand<Person>((person) =>
 		{
-			if (_isAdjusting)
-			{
-				return;
-			}
-			_isAdjusting = true;
+			MainModel.ChangeGender(person);
+		}));
 
-			foreach (var other in _dataService.People)
-			{
-				if (other != person)
-				{
-					other.Gender = (other.Gender == 1) ? 0 : 1;
-				}
-			}
+		private RelayCommand _addCommand;
+		public RelayCommand AddCommand => _addCommand ?? (_addCommand = new RelayCommand(() =>
+		{
+			MainModel.Add();
+		}));
 
-			_isAdjusting = false;
+		private RelayCommand<Person> _insertCommand;
+		public RelayCommand<Person> InsertCommand => _insertCommand ?? (_insertCommand = new RelayCommand<Person>((person) =>
+		{
+			MainModel.Insert(person);
+		}));
+
+		private RelayCommand<Person> _deleteCommand;
+		public RelayCommand<Person> DeleteCommand => _deleteCommand ?? (_deleteCommand = new RelayCommand<Person>((person) =>
+		{
+			MainModel.Delete(person);
 		}));
 
 		/// <summary>
@@ -102,27 +104,6 @@ namespace MVVM4Base.ViewModel
 			{
 				// Code runs "for real"
 				_dataService = dataService;
-			}
-		}
-
-		private void People_ItemsPropertyChanged(object sender, ItemsPropertyChangedEventArgs<Person> e)
-		{
-			int index = _dataService.People.IndexOf(e.Item);
-
-			switch (e.PropertyName)
-			{
-				case "ID":
-					Debug.WriteLine("ID({0}) is Changed. Value={1}.", index, e.Item.ID);
-					break;
-				case "Name":
-					Debug.WriteLine("Name({0}) is Changed. Value={1}.", index, e.Item.Name);
-					break;
-				case "Age":
-					Debug.WriteLine("Age({0}) is Changed. Value={1}.", index, e.Item.Age);
-					break;
-				case "Gender":
-					Debug.WriteLine("Gender({0}) is Changed. Value={1}.", index, e.Item.Gender);
-					break;
 			}
 		}
 	}

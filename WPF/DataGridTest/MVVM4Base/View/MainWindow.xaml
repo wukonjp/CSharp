@@ -12,9 +12,47 @@
 		Height="450"
 		Width="Auto"
 		SizeToContent="Width"
-		WindowStartupLocation="CenterScreen"
-		Name="mainWindow">
+		WindowStartupLocation="CenterScreen">
 
+	<!-- リソース -->
+	<Window.Resources>
+		<c:IndexNumberConverter x:Key="IndexNumberConverter" />
+
+		<!-- AlternationCountとAlternationIndexを応用した行番号ヘッダ（ソートしても変化しない※要素数が変化した場合はRefreshが必要） -->
+		<Style x:Key="LineNumberHeader" TargetType="{x:Type DataGrid}">
+			<Setter Property="AlternationCount"
+					Value="{Binding Items.Count, RelativeSource={RelativeSource self}}" />
+			<Setter Property="RowHeaderStyle">
+				<Setter.Value>
+					<Style TargetType="{x:Type DataGridRowHeader}">
+						<Setter Property="Content" Value="{Binding
+							Path=(ItemsControl.AlternationIndex),
+							RelativeSource={RelativeSource AncestorType=DataGridRow},
+							Converter={StaticResource IndexNumberConverter},
+							Mode=OneWay}"/>
+					</Style>
+				</Setter.Value>
+			</Setter>
+		</Style>
+
+		<!-- AlternationCountとAlternationIndexを応用した行番号カラム（ソートしても変化しない※要素数が変化した場合はRefreshが必要） -->
+		<DataTemplate x:Key="LineNumberColumn">
+			<!-- （添付プロパティは丸括弧で括る） -->
+			<TextBlock Text="{Binding
+					Path=(ItemsControl.AlternationIndex),
+					RelativeSource={RelativeSource AncestorType=DataGridRow},
+					Converter={StaticResource IndexNumberConverter},
+					Mode=OneWay}">
+				<TextBlock.InputBindings>
+					<!-- マウスイベントでコマンドを呼び出す方式（指定列のセルに適用） -->
+					<MouseBinding MouseAction="LeftDoubleClick"
+										Command="{Binding DataContext.CellDoubleClickedCommand, Source={x:Reference mainWindow}}" />
+				</TextBlock.InputBindings>
+			</TextBlock>
+		</DataTemplate>
+	</Window.Resources>
+
+	<!-- トリガー -->
 	<i:Interaction.Triggers>
 		<i:EventTrigger EventName="Loaded">
 			<i:InvokeCommandAction Command="{Binding LoadedCommand}" />
@@ -27,46 +65,55 @@
 		</c:StringMessageTrigger>
 	</i:Interaction.Triggers>
 
+	<!-- ルートパネル -->
 	<Grid>
 		<Grid.RowDefinitions>
 			<RowDefinition Height="190*"/>
 			<RowDefinition Height="229*"/>
 		</Grid.RowDefinitions>
 
+		<!-- Windowのプロキシエレメント(DataContextにViewModelが入っている) -->
+		<FrameworkElement x:Name="mainWindow" />
+	
 		<!-- 同一コレクションへ複数のItemsControlでアクセス（1つ目のビューを使用） -->
-		<DataGrid x:Name="dataGrid1" ItemsSource="{Binding DataService.PeopleViewSource1.View}"
-				  AlternationCount="{Binding Items.Count, RelativeSource={RelativeSource Self}}"
-				  AutoGenerateColumns="False" Grid.Row="0" SelectionMode="Single" CanUserAddRows="True">
-			<!-- 行ヘッダ -->
-			<!-- AlternationCountとAlternationIndexを応用した自動インデックス（ソートしても変化しない） -->
-			<DataGrid.RowHeaderStyle>
-				<Style TargetType="{x:Type DataGridRowHeader}">
-					<Setter
-						Property="Content"
-						Value="{Binding Path=(ItemsControl.AlternationIndex), RelativeSource={RelativeSource AncestorType=DataGridRow}, Mode=OneWay}"/>
-				</Style>
-			</DataGrid.RowHeaderStyle>
-			<DataGrid.Columns>
-				<!-- AlternationCountとAlternationIndexを応用した自動インデックス（ソートしても変化しない） -->
-				<DataGridTemplateColumn Header="Index">
-					<DataGridTemplateColumn.CellTemplate>
-						<DataTemplate>
-							<!-- （添付プロパティは丸括弧で括る） -->
-							<TextBlock Text="{Binding Path=(ItemsControl.AlternationIndex), RelativeSource={RelativeSource AncestorType=DataGridRow}, Mode=OneWay}">
-								<TextBlock.InputBindings>
-									<!-- マウスイベントでコマンドを呼び出す方式（指定列のセルに適用） -->
-									<MouseBinding MouseAction="LeftDoubleClick"
-										Command="{Binding DataContext.CellDoubleClickedCommand, ElementName=mainWindow}" />
-								</TextBlock.InputBindings>
-							</TextBlock>
-						</DataTemplate>
-					</DataGridTemplateColumn.CellTemplate>
-				</DataGridTemplateColumn>
+		<DataGrid x:Name="dataGrid1" Grid.Row="0"
+				  ItemsSource="{Binding MainModel.PeopleViewSource1.View}"
+				  AutoGenerateColumns="False" SelectionMode="Single"
+				  CanUserAddRows="False" CanUserDeleteRows="False" CanUserReorderColumns="False" CanUserResizeRows="False"
+				  Style="{StaticResource LineNumberHeader}">
 
-				<DataGridTextColumn Header="番号" Binding="{Binding ID}" />
+			<!-- 全体のコンテキストメニュー -->
+			<DataGrid.ContextMenu>
+				<ContextMenu>
+					<MenuItem Header="追加" Command="{Binding Path=DataContext.AddCommand, Source={x:Reference mainWindow}}"/>
+				</ContextMenu>
+			</DataGrid.ContextMenu>
+
+			<DataGrid.RowStyle>
+				<Style TargetType="{x:Type DataGridRow}">
+					<Setter Property="ContextMenu">
+						<Setter.Value>
+							<!-- 行のコンテキストメニュー -->
+							<ContextMenu>
+								<MenuItem Header="追加"
+										  Command="{Binding Path=DataContext.AddCommand, Source={x:Reference mainWindow}}" />
+								<MenuItem Header="挿入"
+										  Command="{Binding Path=DataContext.InsertCommand, Source={x:Reference mainWindow}}"
+										  CommandParameter="{Binding}"/>
+								<MenuItem Header="削除"
+										  Command="{Binding Path=DataContext.DeleteCommand, Source={x:Reference mainWindow}}"
+										  CommandParameter="{Binding}"/>
+							</ContextMenu>
+						</Setter.Value>
+					</Setter>
+				</Style>
+			</DataGrid.RowStyle>
+
+			<DataGrid.Columns>
+				<DataGridTemplateColumn Header="行番号" CellTemplate="{StaticResource LineNumberColumn}" />
+				<DataGridTextColumn Header="ID" Binding="{Binding ID}" />
 				<DataGridTextColumn Header="名前" Binding="{Binding Name}" />
 				<DataGridTextColumn Header="年齢" Binding="{Binding Age}" />
-
 				<DataGridTemplateColumn Header="性別" SortMemberPath="Gender">
 					<DataGridTemplateColumn.CellTemplate>
 						<DataTemplate>
@@ -81,22 +128,26 @@
 		</DataGrid>
 
 		<!-- 同一コレクションへ複数のItemsControlでアクセス（2つ目のビューを使用） -->
-		<DataGrid x:Name="dataGrid2" ItemsSource="{Binding DataService.PeopleViewSource2.View}"
-				  AutoGenerateColumns="False" Grid.Row="1" IsReadOnly="True" SelectionMode="Single" CanUserAddRows="False">
+		<DataGrid x:Name="dataGrid2" Grid.Row="1"
+				  ItemsSource="{Binding MainModel.PeopleViewSource2.View}"
+				  AutoGenerateColumns="False" IsReadOnly="True" SelectionMode="Single" CanUserAddRows="False"
+				  Style="{StaticResource LineNumberHeader}">
+
 			<DataGrid.CellStyle>
-				<Style TargetType="DataGridCell">
-					<!-- バインドしたプロパティで背景を制御（全セルに適用） -->
-					<!--Setter Property="Background" Value="{Binding DataContext.BackgroundBrush, ElementName=mainWindow}" /-->
-					<Setter Property="Background" Value="{Binding DataContext.BackgroundBrush, RelativeSource={RelativeSource AncestorType=Window}}" />
+				<Style TargetType="{x:Type DataGridCell}">
+					<!-- バインドしたプロパティで背景を制御（全セルに適用※なぜかRefreshが必要） -->
+					<Setter Property="Background" Value="{Binding DataContext.BackgroundBrush, Source={x:Reference mainWindow}}" />
 					<!-- イベントハンドラを直接呼び出す方式（全セルに適用、EventSetterはDependencyObjectを継承していないのでバインドできない） -->
 					<EventSetter Event="MouseDoubleClick" Handler="DataGridCell_MouseDoubleClick" />
 				</Style>
 			</DataGrid.CellStyle>
+
 			<DataGrid.Columns>
-				<DataGridTextColumn Header="番号" Binding="{Binding ID}" />
+				<DataGridTemplateColumn Header="行番号" CellTemplate="{StaticResource LineNumberColumn}" />
+				<DataGridTextColumn Header="ID" Binding="{Binding ID}" />
 				<DataGridTextColumn Header="名前" Binding="{Binding Name}" />
 				<DataGridTextColumn Header="年齢" Binding="{Binding Age}" />
-				<DataGridTemplateColumn Header="性別" SortMemberPath="Gender" >
+				<DataGridTemplateColumn Header="性別" SortMemberPath="Gender">
 					<DataGridTemplateColumn.CellTemplate>
 						<DataTemplate>
 							<ComboBox SelectedIndex="{Binding Gender}" IsHitTestVisible="False" Focusable="False" IsTabStop="False" >
@@ -113,14 +164,14 @@
 		<!-- 単一ソースの変更イベントを複数のViewが監視＆アクションするとアクションが複数回呼ばれてしまう -->
 		<!-- これを防ぐためダミーコントロールを用意して監視＆アクションを1箇所に集約する -->
 		<!-- 同一コレクションへ複数のItemsControlでアクセス（デフォルトビューを使用） -->
-		<ItemsControl x:Name="dummy" ItemsSource="{Binding DataService.People}">
+		<ItemsControl x:Name="dummy" ItemsSource="{Binding MainModel.People}">
 			<ItemsControl.ItemTemplate>
 				<DataTemplate>
 					<FrameworkElement Visibility="Collapsed">
 						<i:Interaction.Triggers>
 							<i:PropertyChangedTrigger Binding="{Binding Gender}">
 								<i:InvokeCommandAction
-									Command="{Binding DataContext.GenderChangedCommand, ElementName=mainWindow}"
+									Command="{Binding DataContext.GenderChangedCommand, Source={x:Reference mainWindow}}"
 									CommandParameter="{Binding}"/>
 							</i:PropertyChangedTrigger>
 						</i:Interaction.Triggers>

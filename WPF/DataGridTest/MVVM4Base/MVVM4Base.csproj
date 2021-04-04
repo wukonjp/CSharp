@@ -90,6 +90,7 @@
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
     </ApplicationDefinition>
+    <Compile Include="Common\Converter.cs" />
     <Compile Include="Common\DataGridSortBehavior.cs" />
     <Compile Include="Common\StringMessageSendAction.cs" />
     <Compile Include="Common\StringMessageTrigger.cs" />
@@ -100,6 +101,7 @@
     <Compile Include="Common\ShowWindowAction.cs" />
     <Compile Include="Common\WindowClosingCancelAction.cs" />
     <Compile Include="Model\DataService.cs" />
+    <Compile Include="Model\MainModel.cs" />
     <Compile Include="Model\ObservableObjectCollection.cs" />
     <Compile Include="Model\Person.cs" />
     <Compile Include="ViewModel\MainViewModel.cs" />

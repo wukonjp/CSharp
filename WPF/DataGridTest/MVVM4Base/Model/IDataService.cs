@@ -9,10 +9,8 @@ using System.Windows.Data;
 
 namespace MVVM4Base.Model
 {
-    public interface IDataService
-    {
-        ObservableObjectCollection<Person> People { get; }
-        CollectionViewSource PeopleViewSource1 { get; }
-        CollectionViewSource PeopleViewSource2 { get; }
-    }
+	public interface IDataService
+	{
+		MainModel MainModel { get; }
+	}
 }
