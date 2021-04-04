@@ -28,8 +28,7 @@ namespace MVVM4Base.Common
 		private void AssociatedObject_Sorting(object sender, DataGridSortingEventArgs e)
 		{
 			var dataGrid = (DataGrid)sender;
-			var view = CollectionViewSource.GetDefaultView(dataGrid.ItemsSource) as ListCollectionView;
-			if (view == null)
+			if (!(CollectionViewSource.GetDefaultView(dataGrid.ItemsSource) is ListCollectionView view))
 			{
 				return;
 			}
@@ -53,9 +52,9 @@ namespace MVVM4Base.Common
 		/// </summary>
 		private class StableComparer : IComparer
 		{
-			private IEnumerable _oldCollection;
-			private int _direction;
-			private PropertyInfo _propertyInfo;
+			private readonly IEnumerable _oldCollection;
+			private readonly int _direction;
+			private readonly PropertyInfo _propertyInfo;
 
 			public StableComparer(IEnumerable oldCollection, DataGridColumn column)
 			{
@@ -93,9 +92,8 @@ namespace MVVM4Base.Common
 					return 0;
 				}
 
-				var c1 = _propertyInfo.GetValue(o1) as IComparable;
-				var c2 = _propertyInfo.GetValue(o2) as IComparable;
-				if (c1 == null || c2 == null)
+				if (!(_propertyInfo.GetValue(o1) is IComparable c1) ||
+					!(_propertyInfo.GetValue(o2) is IComparable c2))
 				{
 					return 0;
 				}

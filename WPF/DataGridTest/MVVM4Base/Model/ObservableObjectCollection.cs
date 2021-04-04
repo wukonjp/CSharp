@@ -8,31 +8,24 @@ using System.Text;
 using System.Threading.Tasks;
 using GalaSoft.MvvmLight;
 
-// （パターンその１）
-// 単一ソースの変更イベントを複数のViewが監視＆アクションするとアクションが複数回呼ばれてしまう
-// これを防ぐため変更通知コレクションを拡張する
-
 namespace MVVM4Base.Model
 {
+	/// <summary>
+	/// （パターンその１）
+	/// 単一ソースの変更イベントを複数のViewが監視＆アクションするとアクションが複数回呼ばれてしまう
+	/// これを回避するため変更通知コレクションを拡張する
+	/// </summary>
+	/// <typeparam name="T"></typeparam>
 	public class ItemsPropertyChangedEventArgs<T> : EventArgs
 		where T : ObservableObject
 	{
-		private string _propertyName;
-		public string PropertyName
-		{
-			get { return _propertyName; }
-		}
-
-		private T _item;
-		public T Item
-		{
-			get { return _item; }
-		}
+		public string PropertyName { get; private set; }
+		public T Item { get; private set; }
 
 		public ItemsPropertyChangedEventArgs(string propertyName, T item)
 		{
-			_propertyName = propertyName;
-			_item = item;
+			PropertyName = propertyName;
+			Item = item;
 		}
 	}
 
@@ -46,32 +39,20 @@ namespace MVVM4Base.Model
 
 		protected override void OnCollectionChanged(NotifyCollectionChangedEventArgs e)
 		{
-			switch (e.Action)
+			if (e.OldItems != null)
 			{
-				case NotifyCollectionChangedAction.Add:
-					foreach (ObservableObject newItem in e.NewItems)
-					{
-						newItem.PropertyChanged += Items_PropertyChanged;
-					}
-					break;
+				foreach (ObservableObject oldItem in e.OldItems)
+				{
+					oldItem.PropertyChanged -= Items_PropertyChanged;
+				}
+			}
 
-				case NotifyCollectionChangedAction.Remove:
-					foreach (ObservableObject oldItem in e.OldItems)
-					{
-						oldItem.PropertyChanged -= Items_PropertyChanged;
-					}
-					break;
-
-				case NotifyCollectionChangedAction.Replace:
-					foreach (ObservableObject oldItem in e.OldItems)
-					{
-						oldItem.PropertyChanged -= Items_PropertyChanged;
-					}
-					foreach (ObservableObject newItem in e.NewItems)
-					{
-						newItem.PropertyChanged += Items_PropertyChanged;
-					}
-					break;
+			if (e.NewItems != null)
+			{
+				foreach (ObservableObject newItem in e.NewItems)
+				{
+					newItem.PropertyChanged += Items_PropertyChanged;
+				}
 			}
 
 			base.OnCollectionChanged(e);

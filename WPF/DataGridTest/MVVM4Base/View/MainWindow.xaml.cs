@@ -26,10 +26,9 @@ namespace MVVM4Base.View
 			InitializeComponent();
 		}
 
-		private void DataGridCell_MouseDoubleClick(object sender, MouseButtonEventArgs e)
+		private void DataGridCell_MouseWheel(object sender, MouseWheelEventArgs e)
 		{
-			var viewModel = DataContext as MainViewModel;
-			if(viewModel != null)
+			if (DataContext is MainViewModel viewModel)
 			{
 				viewModel.CellDoubleClickedCommand.Execute(e);
 			}

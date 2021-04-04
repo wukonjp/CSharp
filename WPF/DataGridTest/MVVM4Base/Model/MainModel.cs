@@ -7,7 +7,8 @@ namespace MVVM4Base.Model
 {
 	public class MainModel : ObservableObject
 	{
-		bool _isAdjusting;
+		private readonly DataService _dataService;
+		private bool _isAdjusting;
 
 		public ObservableObjectCollection<Person> People { get; private set; }
 		public CollectionViewSource PeopleViewSource1 { get; private set; }
@@ -15,6 +16,8 @@ namespace MVVM4Base.Model
 
 		public MainModel(DataService dataService)
 		{
+			_dataService = dataService;
+
 			People = new ObservableObjectCollection<Person>()
 			{
 				new Person() { ID = 1, Name = "田中", Age = 18, Gender = 1 },
@@ -23,11 +26,8 @@ namespace MVVM4Base.Model
 			};
 			People.ItemsPropertyChanged += People_ItemsPropertyChanged;
 
-			PeopleViewSource1 = new CollectionViewSource();
-			PeopleViewSource1.Source = People;
-
-			PeopleViewSource2 = new CollectionViewSource();
-			PeopleViewSource2.Source = People;
+			PeopleViewSource1 = new CollectionViewSource { Source = People };
+			PeopleViewSource2 = new CollectionViewSource { Source = People };
 		}
 
 

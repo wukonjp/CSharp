@@ -26,7 +26,7 @@ namespace MVVM4Base.ViewModel
 	/// </summary>
 	public class MainViewModel : ViewModelBase
 	{
-		private IDataService _dataService;
+		private readonly IDataService _dataService;
 
 		public MainModel MainModel
 		{
@@ -62,8 +62,6 @@ namespace MVVM4Base.ViewModel
 			{
 				BackgroundBrush = Brushes.Pink;
 			}
-
-			MainModel.RefreshAllView();
 		}));
 
 		private RelayCommand<Person> _genderChangedCommand;
