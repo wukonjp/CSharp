@@ -26,7 +26,7 @@ namespace MVVM4Base.View
 			InitializeComponent();
 		}
 
-		private void DataGridCell_MouseWheel(object sender, MouseWheelEventArgs e)
+		private void DataGridCell_DoubleClick(object sender, MouseWheelEventArgs e)
 		{
 			if (DataContext is MainViewModel viewModel)
 			{

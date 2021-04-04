@@ -39,17 +39,11 @@
 		<!-- AlternationCountとAlternationIndexを応用した行番号カラム（ソートしても変化しない※要素数が変化した場合はRefreshが必要） -->
 		<DataTemplate x:Key="LineNumberColumn">
 			<!-- （添付プロパティは丸括弧で括る） -->
-			<TextBlock Background="{Binding DataContext.BackgroundBrush, RelativeSource={RelativeSource AncestorType=Window}}"
-					   Text="{Binding
+			<TextBlock Text="{Binding
 							Path=(ItemsControl.AlternationIndex),
 							RelativeSource={RelativeSource AncestorType=DataGridRow},
 							Converter={StaticResource IndexNumberConverter},
 							Mode=OneWay}">
-				<TextBlock.InputBindings>
-					<!-- マウスイベントでコマンドを呼び出す方式（指定列のセルに適用） -->
-					<MouseBinding MouseAction="LeftDoubleClick"
-										Command="{Binding DataContext.CellDoubleClickedCommand, RelativeSource={RelativeSource AncestorType=Window}}" />
-				</TextBlock.InputBindings>
 			</TextBlock>
 		</DataTemplate>
 	</Window.Resources>
@@ -59,9 +53,11 @@
 		<i:EventTrigger EventName="Loaded">
 			<i:InvokeCommandAction Command="{Binding LoadedCommand}" />
 		</i:EventTrigger>
+
 		<i:EventTrigger EventName="Closing">
 			<c:QuitConfirmAction />
 		</i:EventTrigger>
+
 		<c:StringMessageTrigger Message="Quit">
 			<c:WindowCloseAction />
 		</c:StringMessageTrigger>
@@ -74,7 +70,7 @@
 			<RowDefinition Height="229*"/>
 		</Grid.RowDefinitions>
 
-		<!-- Windowのプロキシエレメント(DataContextにViewModelが入っている) -->
+		<!-- Windowのプロキシエレメント(DataContextにViewModelが入っている。 これより前の行では参照できない) -->
 		<FrameworkElement x:Name="mainWindow"/>
 	
 		<!-- 同一コレクションへ複数のItemsControlでアクセス（1つ目のビューを使用） -->
@@ -82,6 +78,7 @@
 				  ItemsSource="{Binding MainModel.PeopleViewSource1.View}"
 				  AutoGenerateColumns="False" SelectionMode="Single"
 				  CanUserAddRows="False" CanUserDeleteRows="False" CanUserReorderColumns="False" CanUserResizeRows="False"
+				  Background="{Binding BackgroundBrush}"
 				  Style="{StaticResource LineNumberHeader}">
 
 			<!-- 全体のコンテキストメニュー（ContextMenuはVisualTreeを走査できないためプロキシを使用） -->
@@ -91,6 +88,7 @@
 				</ContextMenu>
 			</DataGrid.ContextMenu>
 
+			<!-- 行スタイル -->
 			<DataGrid.RowStyle>
 				<Style TargetType="{x:Type DataGridRow}">
 					<Setter Property="ContextMenu">
@@ -111,6 +109,7 @@
 				</Style>
 			</DataGrid.RowStyle>
 
+			<!-- カラムの定義 -->
 			<DataGrid.Columns>
 				<DataGridTemplateColumn Header="行番号" CellTemplate="{StaticResource LineNumberColumn}" />
 				<DataGridTextColumn Header="ID" Binding="{Binding ID}" />
@@ -126,6 +125,19 @@
 						</DataTemplate>
 					</DataGridTemplateColumn.CellTemplate>
 				</DataGridTemplateColumn>
+				<DataGridTemplateColumn Header="余白" Width="75">
+					<DataGridTemplateColumn.CellTemplate>
+						<DataTemplate>
+							<TextBlock Text="">
+								<TextBlock.InputBindings>
+									<!-- UIElement.InputBindingsからコマンドを呼び出す方式（指定列のセルに適用） -->
+									<MouseBinding MouseAction="MiddleClick"
+										Command="{Binding DataContext.CellDoubleClickedCommand, RelativeSource={RelativeSource AncestorType=Window}}" />
+								</TextBlock.InputBindings>
+							</TextBlock>
+						</DataTemplate>
+					</DataGridTemplateColumn.CellTemplate>
+				</DataGridTemplateColumn>
 			</DataGrid.Columns>
 		</DataGrid>
 
@@ -133,15 +145,18 @@
 		<DataGrid x:Name="dataGrid2" Grid.Row="1"
 				  ItemsSource="{Binding MainModel.PeopleViewSource2.View}"
 				  AutoGenerateColumns="False" IsReadOnly="True" SelectionMode="Single" CanUserAddRows="False"
+  				  Background="{Binding BackgroundBrush}"
 				  Style="{StaticResource LineNumberHeader}">
 
+			<!-- セルスタイル -->
 			<DataGrid.CellStyle>
 				<Style TargetType="{x:Type DataGridCell}">
 					<!-- イベントハンドラを直接呼び出す方式（全セルに適用、EventSetterはDependencyObjectを継承していないのでバインドできない） -->
-					<EventSetter Event="MouseWheel" Handler="DataGridCell_MouseWheel" />
+					<EventSetter Event="MouseWheel" Handler="DataGridCell_DoubleClick" />
 				</Style>
 			</DataGrid.CellStyle>
 
+			<!-- カラムの定義 -->
 			<DataGrid.Columns>
 				<DataGridTemplateColumn Header="行番号" CellTemplate="{StaticResource LineNumberColumn}" />
 				<DataGridTextColumn Header="ID" Binding="{Binding ID}" />
@@ -154,6 +169,13 @@
 								<ComboBoxItem Content="男性" />
 								<ComboBoxItem Content="女性" />
 							</ComboBox>
+						</DataTemplate>
+					</DataGridTemplateColumn.CellTemplate>
+				</DataGridTemplateColumn>
+				<DataGridTemplateColumn Header="余白" Width="75">
+					<DataGridTemplateColumn.CellTemplate>
+						<DataTemplate>
+							<TextBlock Text="" />
 						</DataTemplate>
 					</DataGridTemplateColumn.CellTemplate>
 				</DataGridTemplateColumn>
