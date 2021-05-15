@@ -22,9 +22,16 @@ namespace WpfSessionEnd
 			listner.LogFileName = Path.Combine(AppDomain.CurrentDomain.BaseDirectory, "log.txt");
 
 			App.Log("Main_Start");
-			App app = new App();
-			app.InitializeComponent();
-			app.Run();
+
+			var mutex = new Mutex(false, "TestApp");
+			if(mutex.WaitOne(0))
+			{
+				App app = new App();
+				app.InitializeComponent();
+				app.Run();
+			}
+			mutex.Close();
+
 			App.Log("Main_End");
 		}
 

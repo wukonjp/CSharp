@@ -36,7 +36,7 @@ namespace WpfSessionEnd
 		private void Window_Closing(object sender, System.ComponentModel.CancelEventArgs e)
 		{
 			App.Log("Window_Closing1");
-			Thread.Sleep(1000);
+			//Thread.Sleep(1000);
 			App.Log("Window_Closing2");
 			//MessageBox.Show("終了確認");
 		}
