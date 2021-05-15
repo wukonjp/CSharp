@@ -39,9 +39,10 @@ namespace WpfSessionEnd
 		{
 			// セッション終了時は呼ばれない
 
-			MessageBox.Show("終了確認");
-
-			App.Log("Window_Closing");
+			App.Log("Window_Closing1");
+			Thread.Sleep(1000);
+			App.Log("Window_Closing2");
+			//MessageBox.Show("終了確認");
 		}
 
 		private void Window_Initialized(object sender, EventArgs e)

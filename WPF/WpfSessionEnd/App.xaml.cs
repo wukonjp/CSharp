@@ -35,7 +35,9 @@ namespace WpfSessionEnd
 		{
 			// セッション終了時にのみ呼ばれる
 
-			App.Log("Application_SessionEnding");
+			App.Log("Application_SessionEnding1");
+			Thread.Sleep(3000);
+			App.Log("Application_SessionEnding2");
 		}
 
 		private void Application_Startup(object sender, StartupEventArgs e)
