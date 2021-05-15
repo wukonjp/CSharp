@@ -21,9 +21,11 @@ namespace WpfSessionEnd
 			var listner =  (DefaultTraceListener)Trace.Listeners["Default"];
 			listner.LogFileName = Path.Combine(AppDomain.CurrentDomain.BaseDirectory, "log.txt");
 
+			App.Log("Main_Start");
 			App app = new App();
 			app.InitializeComponent();
 			app.Run();
+			App.Log("Main_End");
 		}
 
 		public static void Log(string callerName)

@@ -30,15 +30,11 @@ namespace WpfSessionEnd
 
 		private void Window_Closed(object sender, EventArgs e)
 		{
-			// セッション終了時は呼ばれない
-
 			App.Log("Window_Closed");
 		}
 
 		private void Window_Closing(object sender, System.ComponentModel.CancelEventArgs e)
 		{
-			// セッション終了時は呼ばれない
-
 			App.Log("Window_Closing1");
 			Thread.Sleep(1000);
 			App.Log("Window_Closing2");
