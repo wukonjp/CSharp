@@ -15,21 +15,40 @@ namespace StringToStruct
 		/// バイナリデータ構造体
 		/// </summary>
 		[StructLayout(LayoutKind.Sequential, CharSet = CharSet.Ansi, Pack = 4, Size = 36)]
-		struct BynaryData
+		struct BinaryData
 		{
-			public byte B1;
-			public ushort W1;
-			public uint DW1;
-
+			// Marshal.StructureToPtrメソッドがUnmanagedType.LPTStrに対して行う動作
+			// CharSet = CharSet.Ansi の場合
+			// ・Unicode文字列をShiftJIS文字列へ変換する。
+			// ・ShiftJIS文字列をアンマネージメモリ※に格納し、そのポインタをアンマネージ構造体にセットする。
+			// ※Marshal.DestroyStructureメソッドで開放が必要。
 			[MarshalAs(UnmanagedType.LPTStr)]
-			public string LPTText;									// c/c++ char*
+			public string LPTText;                                  // 8  byte (c/c++ char*)
 
+			public byte B1;                                         // 1  byte
+																	// 1  byte (Padding)
+			public ushort W1;										// 2  byte
+			public uint DW1;                                        // 4  byte
+
+			// Marshal.StructureToPtrメソッドがUnmanagedType.ByValTStrに対して行う動作
+			// CharSet = CharSet.Ansi の場合
+			// ・Unicode文字列をShiftJIS文字列へ変換する。
+			// ・ShiftJIS文字列を固定長(SizeConst-1)に切り詰めてアンマネージ構造体に埋め込む。
+			// ・末尾位置(SizeConst-1)にはNULL文字を書き込む。
+			// ・末尾位置(SizeConst-1)がトレイルバイトの場合は、例外が発生することがある。
+			// 対策1. CharSet = CharSet.Unicode を使用する。
+			// 対策2. 変換後にSizeConstを超えないよう、あらかじめUnicode文字列を切り詰めておく。
+			// 対策3. SizeConstを十分に大きくする。
 			[MarshalAs(UnmanagedType.ByValTStr, SizeConst = 7)]
-			public string ByValText;                                // c/c++ char[SizeConst]
+			public string ByValText;                                // 7  byte (c/c++ char[SizeConst])
+			// 														// 1  byte (Padding)
 
-			public byte B2;
-			public ushort W2;
-			public uint DW2;
+			public uint DW2;                                        // 4  byte
+			public byte B2;                                         // 1  byte
+																	// 1  byte (Padding)
+			public ushort W2;                                       // 2  byte
+
+																	// 4  byte (Padding)
 		}
 
 		/// <summary>
@@ -37,16 +56,16 @@ namespace StringToStruct
 		/// </summary>
 		static void Main(string[] args)
 		{
-			var srcData = new BynaryData();
-			srcData.B1 = 0x11;
-			srcData.W1 = 0xFF11;
-			srcData.DW1 = 0xFFFFFF11;
-			srcData.LPTText = "０１２";
-			srcData.ByValText = "３４５";
-			srcData.B2 = 0x22;
-			srcData.W2 = 0xFF22;
-			srcData.DW2 = 0xFFFFFF22;
-			Console.WriteLine("変換前LPT文字列: {0}", srcData.LPTText);
+			var srcData = new BinaryData();
+			srcData.LPTText = "０１２３４５";
+			srcData.B1 = 0x12;
+			srcData.W1 = 0xFF34;
+			srcData.DW1 = 0xFFFFFF56;
+			srcData.ByValText = "あいう";
+			srcData.DW2 = 0xFFFFFF11;
+			srcData.B2 = 0x78;
+			srcData.W2 = 0xFF99;
+			Console.WriteLine("変換前LP文字列: {0}", srcData.LPTText);
 			Console.WriteLine("変換前ByVal文字列: {0}", srcData.ByValText);
 
 			var buffer1 = StructureToBytes(srcData);
@@ -57,8 +76,8 @@ namespace StringToStruct
 			}
 
 			Console.WriteLine();
-			var dstData = (BynaryData)BytesToStructure(buffer1, typeof(BynaryData));
-			DestroyStructure(buffer1, typeof(BynaryData));
+			var dstData = (BinaryData)BytesToStructure(buffer1, typeof(BinaryData));
+			DestroyBytes(buffer1, typeof(BinaryData));
 			Console.WriteLine("変換データ解放：");
 			foreach (var b in buffer1)
 			{
@@ -77,7 +96,7 @@ namespace StringToStruct
 			}
 
 			Console.WriteLine();
-			DestroyStructure(buffer2, typeof(BynaryData));
+			DestroyBytes(buffer2, typeof(BinaryData));
 			Console.WriteLine("復元データ解放：");
 			foreach (var b in buffer2)
 			{
@@ -88,10 +107,9 @@ namespace StringToStruct
 		}
 
 		/// <summary>
-		/// 構造体からバイト配列を生成する
-		/// ※構造体にマネージ参照を含んでいる場合はバイト配列上にアンマネージ参照が生成される。
-		/// 　バイト配列の使用後はMarshal.DestroyStructure()で参照先のアンマネージメモリを
-		/// 　開放しなければメモリリークする。
+		/// マネージ構造体からアンマネージ構造体を生成する
+		/// ※アンマネージ構造体にポインタ参照を含んでいる場合は、
+		/// 　アンマネージメモリをMarshal.DestroyStructureメソッドで開放しなければメモリリークする。
 		/// </summary>
 		private static byte[] StructureToBytes(object structure)
 		{
@@ -102,13 +120,6 @@ namespace StringToStruct
 			try
 			{
 				var ptr = gch.AddrOfPinnedObject();
-
-				// Marshal.StructureToPtr()がUnmanagedType.ByValTStrに対して行う挙動
-				// ・文字列を固定長に丸める。
-				// ・文字コードをShiftJISコードへ変換する。
-				// ・文字列の(SizeConst-1)位置へヌル文字を書き込む。
-				// ・ヌル文字書き込み位置に全角文字があった場合は例外を発生する。
-				// 　※そのためSizeConstを十分な大きさに設定する必要がある。
 				Marshal.StructureToPtr(structure, ptr, false);
 			}
 			finally
@@ -120,7 +131,7 @@ namespace StringToStruct
 		}
 
 		/// <summary>
-		/// バイト配列から構造体を生成する
+		/// アンマネージ構造体からマネージ構造体を生成する
 		/// </summary>
 		private static object BytesToStructure(byte[] buffer, Type structureType)
 		{
@@ -141,9 +152,9 @@ namespace StringToStruct
 		}
 
 		/// <summary>
-		/// バイト配列上の構造体からアンマネージ参照を開放する
+		/// アンマネージ構造体上のアンマネージメモリを開放する
 		/// </summary>
-		private static void DestroyStructure(byte[] buffer, Type structureType)
+		private static void DestroyBytes(byte[] buffer, Type structureType)
 		{
 			var gch = GCHandle.Alloc(buffer, GCHandleType.Pinned);
 			try
