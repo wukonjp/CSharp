@@ -13,9 +13,12 @@ namespace StringToStruct
 	{
 		/// <summary>
 		/// バイナリデータ構造体
+		/// ・書式指定されたclass/structが対象
+		/// ・CharSetに設定した値でTCHARの型が変化する
+		/// ・UnmanagedType.LPxxxx指定するとアンマネージメモリが確保され、そのポインタが埋め込まれる（要開放）
 		/// </summary>
 		[StructLayout(LayoutKind.Sequential, CharSet = CharSet.Ansi, Pack = 4, Size = 36)]
-		struct BinaryData
+		sealed class BinaryData
 		{
 			// Marshal.StructureToPtrメソッドがUnmanagedType.LPTStrに対して行う動作
 			// CharSet = CharSet.Ansi の場合
@@ -23,7 +26,7 @@ namespace StringToStruct
 			// ・ShiftJIS文字列をアンマネージメモリ※に格納し、そのポインタをアンマネージ構造体にセットする。
 			// ※Marshal.DestroyStructureメソッドで開放が必要。
 			[MarshalAs(UnmanagedType.LPTStr)]
-			public string LPTText;                                  // 8  byte (c/c++ char*)
+			public string LPTText;                                  // 8  byte (TCHAR*)
 
 			public byte B1;                                         // 1  byte
 																	// 1  byte (Padding)
@@ -40,10 +43,14 @@ namespace StringToStruct
 			// 対策2. 変換後にSizeConstを超えないよう、あらかじめUnicode文字列を切り詰めておく。
 			// 対策3. SizeConstを十分に大きくする。
 			[MarshalAs(UnmanagedType.ByValTStr, SizeConst = 7)]
-			public string ByValText;                                // 7  byte (c/c++ char[SizeConst])
-			// 														// 1  byte (Padding)
+			public string ByValText;                                // 7  byte (TCHAR[SizeConst])
+																	// 1  byte (Padding)
 
-			public uint DW2;                                        // 4  byte
+			// Marshal.StructureToPtrメソッドがUnmanagedType.ByValArrayに対して行う動作
+			// ・配列を固定長(SizeConst)に切り詰めてアンマネージ構造体に埋め込む。
+			[MarshalAs(UnmanagedType.ByValArray, SizeConst = 4)]
+			public byte[] BArray;                                   // 4  byte (BYTE[SizeConst])
+
 			public byte B2;                                         // 1  byte
 																	// 1  byte (Padding)
 			public ushort W2;                                       // 2  byte
@@ -61,8 +68,8 @@ namespace StringToStruct
 			srcData.B1 = 0x12;
 			srcData.W1 = 0xFF34;
 			srcData.DW1 = 0xFFFFFF56;
-			srcData.ByValText = "あいう";
-			srcData.DW2 = 0xFFFFFF11;
+			srcData.ByValText = "あいう9";
+			srcData.BArray = new byte[6] { 0xFF, 0xFF, 0xFF, 0x11, 0x22, 0x33 };
 			srcData.B2 = 0x78;
 			srcData.W2 = 0xFF99;
 			Console.WriteLine("変換前LP文字列: {0}", srcData.LPTText);
@@ -108,8 +115,8 @@ namespace StringToStruct
 
 		/// <summary>
 		/// マネージ構造体からアンマネージ構造体を生成する
-		/// ※アンマネージ構造体にポインタ参照を含んでいる場合は、
-		/// 　アンマネージメモリをMarshal.DestroyStructureメソッドで開放しなければメモリリークする。
+		/// ※アンマネージ構造体にポインタ参照（アンマネージメモリ）を含んでいる場合は、
+		/// 　Marshal.DestroyStructureメソッドで開放しなければメモリリークする。
 		/// </summary>
 		private static byte[] StructureToBytes(object structure)
 		{
