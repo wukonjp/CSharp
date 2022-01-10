@@ -25,7 +25,7 @@ namespace SQLiteTest
 
 			if (File.Exists(DataFileName))
 			{
-				//File.Delete(DataFileName);
+				File.Delete(DataFileName);
 			}
 
 			var scsb = new SQLiteConnectionStringBuilder
@@ -66,6 +66,8 @@ namespace SQLiteTest
 							for (int i = 0; i < FieldCount; i++)
 							{
 								sb.AppendFormat("'行{0:000000000} 列{1:0000000000} AABBCCDDEEFF'", r, i);
+								//sb.AppendFormat("NULL");
+								//sb.AppendFormat("''");
 								if (i != (FieldCount - 1))
 								{
 									sb.Append(',');
