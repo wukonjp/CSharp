@@ -11,6 +11,13 @@ namespace StringToStruct
 	/// </summary>
 	class Program
 	{
+		[StructLayout(LayoutKind.Sequential, CharSet = CharSet.Ansi)]
+		abstract class BaseData
+		{
+			public int T1;
+			public int T2;
+		}
+
 		/// <summary>
 		/// バイナリデータ構造体
 		/// ・書式指定されたclass/structが対象
@@ -18,7 +25,7 @@ namespace StringToStruct
 		/// ・UnmanagedType.LPxxxx指定するとアンマネージメモリが確保され、そのポインタが埋め込まれる（要開放）
 		/// </summary>
 		[StructLayout(LayoutKind.Sequential, CharSet = CharSet.Ansi, Pack = 4, Size = 36)]
-		sealed class BinaryData
+		sealed class BinaryData : BaseData
 		{
 			// Marshal.StructureToPtrメソッドがUnmanagedType.LPTStrに対して行う動作
 			// CharSet = CharSet.Ansi の場合
@@ -64,6 +71,8 @@ namespace StringToStruct
 		static void Main(string[] args)
 		{
 			var srcData = new BinaryData();
+			srcData.T1 = 0x11111111;
+			srcData.T2 = 0x22222222;
 			srcData.LPTText = "０１２３４５";
 			srcData.B1 = 0x12;
 			srcData.W1 = 0xFF34;
@@ -123,15 +132,12 @@ namespace StringToStruct
 			int size = Marshal.SizeOf(structure);
 			var buffer = new byte[size];
 
-			var gch = GCHandle.Alloc(buffer, GCHandleType.Pinned);
-			try
+			unsafe
 			{
-				var ptr = gch.AddrOfPinnedObject();
-				Marshal.StructureToPtr(structure, ptr, false);
-			}
-			finally
-			{
-				gch.Free();
+				fixed (byte* ptr = buffer)
+				{
+					Marshal.StructureToPtr(structure, (IntPtr)ptr, false);
+				}
 			}
 
 			return buffer;
@@ -144,15 +150,12 @@ namespace StringToStruct
 		{
 			object structure;
 
-			var gch = GCHandle.Alloc(buffer, GCHandleType.Pinned);
-			try
+			unsafe
 			{
-				var ptr = gch.AddrOfPinnedObject();
-				structure = Marshal.PtrToStructure(ptr, structureType);
-			}
-			finally
-			{
-				gch.Free();
+				fixed(byte* ptr = buffer)
+				{
+					structure = Marshal.PtrToStructure((IntPtr)ptr, structureType);
+				}
 			}
 
 			return structure;
@@ -163,15 +166,12 @@ namespace StringToStruct
 		/// </summary>
 		private static void DestroyBytes(byte[] buffer, Type structureType)
 		{
-			var gch = GCHandle.Alloc(buffer, GCHandleType.Pinned);
-			try
+			unsafe
 			{
-				var ptr = gch.AddrOfPinnedObject();
-				Marshal.DestroyStructure(ptr, structureType);
-			}
-			finally
-			{
-				gch.Free();
+				fixed (byte* ptr = buffer)
+				{
+					Marshal.DestroyStructure((IntPtr)ptr, structureType);
+				}
 			}
 		}
 	}
