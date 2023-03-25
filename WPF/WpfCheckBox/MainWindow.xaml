@@ -1,0 +1,299 @@
+﻿<Window x:Class="WpfCheckBox.MainWindow"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+        xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+        xmlns:local="clr-namespace:WpfCheckBox"
+        mc:Ignorable="d"
+        Title="MainWindow" Height="450" Width="800">
+
+	<Window.DataContext>
+		<local:ViewModel />
+	</Window.DataContext>
+
+	<Window.Resources>
+		<ControlTemplate x:Key="checkBoxTemplate" TargetType="{x:Type CheckBox}">
+			<Border x:Name="border" Background="Gray" Height="20">
+				<Ellipse x:Name="ellipse" Height="5" Width="5" Fill="Black" Visibility="Collapsed" />
+			</Border>
+			<ControlTemplate.Triggers>
+				<Trigger Property="CheckBox.IsChecked" Value="True">
+					<Setter TargetName="ellipse" Property="Visibility" Value="Visible"/>
+				</Trigger>
+				<Trigger Property="CheckBox.IsEnabled" Value="True">
+					<Setter TargetName="border" Property="Background" Value="LightGray"/>
+				</Trigger>
+			</ControlTemplate.Triggers>
+		</ControlTemplate>
+	</Window.Resources>
+	
+	<Grid>
+		<Grid.ColumnDefinitions>
+			<ColumnDefinition Width="1*"/>
+			<ColumnDefinition Width="1*"/>
+		</Grid.ColumnDefinitions>
+		<Grid.RowDefinitions>
+			<RowDefinition Height="1*"/>
+			<RowDefinition Height="1*"/>
+		</Grid.RowDefinitions>
+
+		<FrameworkElement x:Name="proxy" />
+
+		<!-- DataGridを使用してカスタムしていくパターン -->
+		<DataGrid Grid.Row="0"
+				  Grid.Column="0"
+				  ItemsSource="{Binding Rows}"
+				  AutoGenerateColumns="False"
+				  HorizontalAlignment="Center"
+				  VerticalAlignment="Center"
+				  SelectionMode="Single"
+				  SelectionUnit="Cell"
+				  CanUserAddRows="False"
+				  CanUserDeleteRows="False"
+				  CanUserReorderColumns="False"
+				  CanUserResizeRows="False"
+				  CanUserResizeColumns="False"
+				  CanUserSortColumns="False"
+  				  HeadersVisibility="Column">
+			<DataGrid.Columns>
+				<DataGridTemplateColumn Width="20">
+					<DataGridTemplateColumn.CellTemplate>
+						<DataTemplate>
+							<TextBlock Text="{Binding NameA}" />
+						</DataTemplate>
+					</DataGridTemplateColumn.CellTemplate>
+				</DataGridTemplateColumn>
+				<DataGridTemplateColumn Width="20">
+					<DataGridTemplateColumn.CellTemplate>
+						<DataTemplate>
+							<TextBlock Text="{Binding NameB}" />
+						</DataTemplate>
+					</DataGridTemplateColumn.CellTemplate>
+				</DataGridTemplateColumn>
+				<DataGridTemplateColumn>
+					<DataGridTemplateColumn.Header>
+						<StackPanel>
+							<TextBlock Text="{Binding DataContext.ColumnHeaders[0].LabelU, Source={x:Reference proxy}}" />
+							<Separator/>
+							<TextBlock Text="{Binding DataContext.ColumnHeaders[0].LabelD, Source={x:Reference proxy}}" />
+						</StackPanel>
+					</DataGridTemplateColumn.Header>
+					<DataGridTemplateColumn.CellTemplate>
+						<DataTemplate>
+							<CheckBox IsEnabled="{Binding Columuns[0].IsEnabled}"
+									  IsChecked="{Binding Columuns[0].IsChecked}"
+									  Template="{StaticResource checkBoxTemplate}" />
+						</DataTemplate>
+					</DataGridTemplateColumn.CellTemplate>
+				</DataGridTemplateColumn>
+				<DataGridTemplateColumn>
+					<DataGridTemplateColumn.Header>
+						<StackPanel>
+							<TextBlock Text="{Binding DataContext.ColumnHeaders[1].LabelU, Source={x:Reference proxy}}" />
+							<Separator/>
+							<TextBlock Text="{Binding DataContext.ColumnHeaders[1].LabelD, Source={x:Reference proxy}}" />
+						</StackPanel>
+					</DataGridTemplateColumn.Header>
+					<DataGridTemplateColumn.CellTemplate>
+						<DataTemplate>
+							<CheckBox IsEnabled="{Binding Columuns[1].IsEnabled}"
+									  IsChecked="{Binding Columuns[1].IsChecked}"
+									  Template="{StaticResource checkBoxTemplate}" />
+						</DataTemplate>
+					</DataGridTemplateColumn.CellTemplate>
+				</DataGridTemplateColumn>
+				<DataGridTemplateColumn>
+					<DataGridTemplateColumn.Header>
+						<StackPanel>
+							<TextBlock Text="{Binding DataContext.ColumnHeaders[2].LabelU, Source={x:Reference proxy}}" />
+							<Separator/>
+							<TextBlock Text="{Binding DataContext.ColumnHeaders[2].LabelD, Source={x:Reference proxy}}" />
+						</StackPanel>
+					</DataGridTemplateColumn.Header>
+					<DataGridTemplateColumn.CellTemplate>
+						<DataTemplate>
+							<CheckBox IsEnabled="{Binding Columuns[2].IsEnabled}"
+									  IsChecked="{Binding Columuns[2].IsChecked}"
+									  Template="{StaticResource checkBoxTemplate}" />
+						</DataTemplate>
+					</DataGridTemplateColumn.CellTemplate>
+				</DataGridTemplateColumn>
+				<DataGridTemplateColumn>
+					<DataGridTemplateColumn.Header>
+						<StackPanel>
+							<TextBlock Text="{Binding DataContext.ColumnHeaders[3].LabelU, Source={x:Reference proxy}}" />
+							<Separator/>
+							<TextBlock Text="{Binding DataContext.ColumnHeaders[3].LabelD, Source={x:Reference proxy}}" />
+						</StackPanel>
+					</DataGridTemplateColumn.Header>
+					<DataGridTemplateColumn.CellTemplate>
+						<DataTemplate>
+							<CheckBox IsEnabled="{Binding Columuns[3].IsEnabled}"
+									  IsChecked="{Binding Columuns[3].IsChecked}"
+									  Template="{StaticResource checkBoxTemplate}" />
+						</DataTemplate>
+					</DataGridTemplateColumn.CellTemplate>
+				</DataGridTemplateColumn>
+				<DataGridTemplateColumn>
+					<DataGridTemplateColumn.Header>
+						<StackPanel>
+							<TextBlock Text="{Binding DataContext.ColumnHeaders[4].LabelU, Source={x:Reference proxy}}" />
+							<Separator/>
+							<TextBlock Text="{Binding DataContext.ColumnHeaders[4].LabelD, Source={x:Reference proxy}}" />
+						</StackPanel>
+					</DataGridTemplateColumn.Header>
+					<DataGridTemplateColumn.CellTemplate>
+						<DataTemplate>
+							<CheckBox IsEnabled="{Binding Columuns[4].IsEnabled}"
+									  IsChecked="{Binding Columuns[4].IsChecked}"
+									  Template="{StaticResource checkBoxTemplate}" />
+						</DataTemplate>
+					</DataGridTemplateColumn.CellTemplate>
+				</DataGridTemplateColumn>
+				<DataGridTemplateColumn>
+					<DataGridTemplateColumn.Header>
+						<StackPanel>
+							<TextBlock Text="{Binding DataContext.ColumnHeaders[5].LabelU, Source={x:Reference proxy}}" />
+							<Separator/>
+							<TextBlock Text="{Binding DataContext.ColumnHeaders[5].LabelD, Source={x:Reference proxy}}" />
+						</StackPanel>
+					</DataGridTemplateColumn.Header>
+					<DataGridTemplateColumn.CellTemplate>
+						<DataTemplate>
+							<CheckBox IsEnabled="{Binding Columuns[5].IsEnabled}"
+									  IsChecked="{Binding Columuns[5].IsChecked}"
+									  Template="{StaticResource checkBoxTemplate}" />
+						</DataTemplate>
+					</DataGridTemplateColumn.CellTemplate>
+				</DataGridTemplateColumn>
+				<DataGridTemplateColumn>
+					<DataGridTemplateColumn.Header>
+						<StackPanel>
+							<TextBlock Text="{Binding DataContext.ColumnHeaders[6].LabelU, Source={x:Reference proxy}}" />
+							<Separator/>
+							<TextBlock Text="{Binding DataContext.ColumnHeaders[6].LabelD, Source={x:Reference proxy}}" />
+						</StackPanel>
+					</DataGridTemplateColumn.Header>
+					<DataGridTemplateColumn.CellTemplate>
+						<DataTemplate>
+							<CheckBox IsEnabled="{Binding Columuns[6].IsEnabled}"
+									  IsChecked="{Binding Columuns[6].IsChecked}"
+									  Template="{StaticResource checkBoxTemplate}" />
+						</DataTemplate>
+					</DataGridTemplateColumn.CellTemplate>
+				</DataGridTemplateColumn>
+				<DataGridTemplateColumn>
+					<DataGridTemplateColumn.Header>
+						<StackPanel>
+							<TextBlock Text="{Binding DataContext.ColumnHeaders[7].LabelU, Source={x:Reference proxy}}" />
+							<Separator/>
+							<TextBlock Text="{Binding DataContext.ColumnHeaders[7].LabelD, Source={x:Reference proxy}}" />
+						</StackPanel>
+					</DataGridTemplateColumn.Header>
+					<DataGridTemplateColumn.CellTemplate>
+						<DataTemplate>
+							<CheckBox IsEnabled="{Binding Columuns[7].IsEnabled}"
+									  IsChecked="{Binding Columuns[7].IsChecked}"
+									  Template="{StaticResource checkBoxTemplate}" />
+						</DataTemplate>
+					</DataGridTemplateColumn.CellTemplate>
+				</DataGridTemplateColumn>
+				<DataGridTemplateColumn>
+					<DataGridTemplateColumn.Header>
+						<StackPanel>
+							<TextBlock Text="{Binding DataContext.ColumnHeaders[8].LabelU, Source={x:Reference proxy}}" />
+							<Separator/>
+							<TextBlock Text="{Binding DataContext.ColumnHeaders[8].LabelD, Source={x:Reference proxy}}" />
+						</StackPanel>
+					</DataGridTemplateColumn.Header>
+					<DataGridTemplateColumn.CellTemplate>
+						<DataTemplate>
+							<CheckBox IsEnabled="{Binding Columuns[8].IsEnabled}"
+									  IsChecked="{Binding Columuns[8].IsChecked}"
+									  Template="{StaticResource checkBoxTemplate}" />
+						</DataTemplate>
+					</DataGridTemplateColumn.CellTemplate>
+				</DataGridTemplateColumn>
+			</DataGrid.Columns>
+		</DataGrid>
+
+		<!-- ItemsControlを使用して自前で構築していくパターン -->
+		<Border
+			BorderThickness="1,1,0,0" BorderBrush="Black"
+			Grid.Row="0"
+			Grid.Column="1"
+			HorizontalAlignment="Center"
+			VerticalAlignment="Center">
+			<StackPanel>
+				<!-- 列ヘッダ部 -->
+				<ItemsControl
+					HorizontalAlignment="Right"
+					ItemsSource="{Binding ColumnHeaders}">
+					<ItemsControl.Template>
+						<ControlTemplate>
+							<Border BorderThickness="1,0,0,0" BorderBrush="Black">
+								<ItemsPresenter />
+							</Border>
+						</ControlTemplate>
+					</ItemsControl.Template>
+					<ItemsControl.ItemsPanel>
+						<ItemsPanelTemplate>
+							<StackPanel Orientation="Horizontal"/>
+						</ItemsPanelTemplate>
+					</ItemsControl.ItemsPanel>
+					<ItemsControl.ItemTemplate>
+						<DataTemplate>
+							<Border Width="25" BorderThickness="0,0,1,0" BorderBrush="Black">
+								<StackPanel>
+									<TextBlock Text="{Binding LabelU}" />
+									<Separator/>
+									<TextBlock Text="{Binding LabelD}" />
+								</StackPanel>
+							</Border>
+						</DataTemplate>
+					</ItemsControl.ItemTemplate>
+				</ItemsControl>
+
+				<!-- レコード部 -->
+				<ItemsControl ItemsSource="{Binding Rows}">
+					<ItemsControl.Template>
+						<ControlTemplate>
+							<Border BorderThickness="0,1,0,0" BorderBrush="Black">
+								<ItemsPresenter />
+							</Border>
+						</ControlTemplate>
+					</ItemsControl.Template>
+					<ItemsControl.ItemTemplate>
+						<DataTemplate>
+							<StackPanel Orientation="Horizontal">
+								<Border Width="25" BorderThickness="0,0,1,1" BorderBrush="Black">
+									<TextBlock Text="{Binding NameA}" />
+								</Border>
+								<Border Width="25" BorderThickness="0,0,1,1" BorderBrush="Black">
+									<TextBlock Text="{Binding NameB}" />
+								</Border>
+								<ItemsControl ItemsSource="{Binding Columuns}">
+									<ItemsControl.ItemsPanel>
+										<ItemsPanelTemplate>
+											<StackPanel Orientation="Horizontal" />
+										</ItemsPanelTemplate>
+									</ItemsControl.ItemsPanel>
+									<ItemsControl.ItemTemplate>
+										<DataTemplate>
+											<Border Width="25" BorderThickness="0,0,1,1" BorderBrush="Black">
+												<CheckBox
+													IsEnabled="{Binding IsEnabled}"
+													IsChecked="{Binding IsChecked}"
+													Template="{StaticResource checkBoxTemplate}" />
+											</Border>
+										</DataTemplate>
+									</ItemsControl.ItemTemplate>
+								</ItemsControl>
+							</StackPanel>
+						</DataTemplate>
+					</ItemsControl.ItemTemplate>
+				</ItemsControl>
+			</StackPanel>
+		</Border>
+	</Grid>
+</Window>
