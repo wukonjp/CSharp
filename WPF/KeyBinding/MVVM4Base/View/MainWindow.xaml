@@ -62,8 +62,10 @@
 			<TextBlock Text="InputKeyBinding =" />
 			<TextBlock Text="{Binding InputKeyBinding}" />
 		</StackPanel>
-		<StackPanel Width="300" Height="20" Margin="0,20,0,0">
-			<Button Content="終了" Width="80" Height="20" HorizontalAlignment="Right">
+		<StackPanel Height="20" Margin="0,20,0,0" Orientation="Horizontal" HorizontalAlignment="Right">
+			<Button Content="クリア" Width="80" Height="20"
+					Command="{Binding ClearCommand}" />
+			<Button Content="終了" Width="80" Height="20">
 				<i:Interaction.Triggers>
 					<i:EventTrigger EventName="Click">
 						<c:StringMessageSendAction Message="Quit" />

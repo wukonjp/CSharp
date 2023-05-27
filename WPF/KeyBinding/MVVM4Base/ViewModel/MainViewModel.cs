@@ -22,11 +22,6 @@ namespace MVVM4Base.ViewModel
 	{
 		private IDataService _dataService;
 
-		private RelayCommand _loadedCommand;
-		public RelayCommand LoadedCommand => _loadedCommand ?? (_loadedCommand = new RelayCommand(() =>
-		{
-		}));
-
 		private string _inputkey;
 		public string InputKey
 		{
@@ -97,6 +92,11 @@ namespace MVVM4Base.ViewModel
 			}
 		}
 
+		private RelayCommand _loadedCommand;
+		public RelayCommand LoadedCommand => _loadedCommand ?? (_loadedCommand = new RelayCommand(() =>
+		{
+		}));
+
 		private RelayCommand<object> _keyEventCommand;
 		public RelayCommand<object> KeyEventCommand => _keyEventCommand ?? (_keyEventCommand = new RelayCommand<object>((param) =>
 		{
@@ -114,6 +114,16 @@ namespace MVVM4Base.ViewModel
 		public RelayCommand<string> KeyBindingCommand => _keyBindingCommand ?? (_keyBindingCommand = new RelayCommand<string>((key) =>
 		{
 			InputKeyBinding = key;
+		}));
+
+		private RelayCommand _clearCommand;
+		public RelayCommand ClearCommand => _clearCommand ?? (_clearCommand = new RelayCommand(() =>
+		{
+			InputKey = null;
+			InputSystemKey = null;
+			InputImeProcessedKey = null;
+			InputDeadCharProcessedKey = null;
+			InputKeyBinding = null;
 		}));
 
 		/// <summary>
